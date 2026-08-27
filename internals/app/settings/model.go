@@ -18,6 +18,16 @@ type Settings struct {
 	// intended. See repo_test.go for a regression test pinning this down.
 	ID string `db:"id,primary_key,uuid"`
 
+	// TrainerName / TrainerRole are the user's own display name and job
+	// title, shown in the sidebar - there's no login/auth in this app (it's
+	// a single-user desktop tool), so this is the only "who is using this"
+	// concept it has. An empty TrainerName is the signal the frontend uses
+	// to show the first-run onboarding prompt (see OnboardingModal.svelte)
+	// instead of a dedicated "onboarding completed" flag - simpler, and
+	// equivalent in practice since the sidebar always needs a name to show.
+	TrainerName string `db:"trainer_name"`
+	TrainerRole string `db:"trainer_role"`
+
 	// ExportBaseDirectory overrides config.yaml's export.base_directory.
 	// Empty means "use the configured default (or the auto-detected
 	// Desktop folder if that's empty too)".
@@ -62,6 +72,9 @@ func (Settings) TableName() string {
 // touched in the form get sent, and omitted ones leave the stored value
 // unchanged rather than being reset to empty.
 type UpdateRequest struct {
+	TrainerName *string `json:"trainerName,omitempty"`
+	TrainerRole *string `json:"trainerRole,omitempty"`
+
 	ExportBaseDirectory *string `json:"exportBaseDirectory,omitempty"`
 
 	ColorPageBackground *string `json:"colorPageBackground,omitempty"`
@@ -81,6 +94,9 @@ type UpdateRequest struct {
 
 // Response — the data sent to the frontend.
 type Response struct {
+	TrainerName string `json:"trainerName"`
+	TrainerRole string `json:"trainerRole"`
+
 	ExportBaseDirectory string `json:"exportBaseDirectory"`
 
 	ColorPageBackground string `json:"colorPageBackground"`
@@ -100,6 +116,8 @@ type Response struct {
 
 func toResponse(s Settings) Response {
 	return Response{
+		TrainerName:         s.TrainerName,
+		TrainerRole:         s.TrainerRole,
 		ExportBaseDirectory: s.ExportBaseDirectory,
 		ColorPageBackground: s.ColorPageBackground,
 		ColorCardBackground: s.ColorCardBackground,
@@ -124,6 +142,8 @@ func applyUpdate(s *Settings, req UpdateRequest) {
 			*dst = *src
 		}
 	}
+	set(&s.TrainerName, req.TrainerName)
+	set(&s.TrainerRole, req.TrainerRole)
 	set(&s.ExportBaseDirectory, req.ExportBaseDirectory)
 	set(&s.ColorPageBackground, req.ColorPageBackground)
 	set(&s.ColorCardBackground, req.ColorCardBackground)

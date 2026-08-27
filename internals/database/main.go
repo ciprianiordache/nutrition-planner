@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -143,6 +144,21 @@ func (db *Database) Close() error {
 
 func (db *Database) Driver() string {
 	return db.cfg.Driver
+}
+
+// SQLitePath returns the on-disk path to the sqlite database file - used by
+// settings.Handler.BackupDatabase to know what to copy. Returns an error
+// for any non-sqlite driver (Postgres/MySQL have no single file to copy;
+// backing those up is a different operation entirely) or for an in-memory
+// database (nothing on disk to back up).
+func (db *Database) SQLitePath() (string, error) {
+	if db.cfg.Driver != "sqlite" && db.cfg.Driver != "sqlite3" {
+		return "", fmt.Errorf("backup is only supported for sqlite databases (driver is %q)", db.cfg.Driver)
+	}
+	if db.cfg.Name == ":memory:" {
+		return "", errors.New("cannot back up an in-memory database")
+	}
+	return db.buildDSN()
 }
 
 func enableSQLiteFK(conn *sql.DB) error {

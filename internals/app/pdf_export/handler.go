@@ -1,5 +1,9 @@
 package pdf_export
 
+import (
+	"nutrition-planner/internals/osutil"
+)
+
 // Handler exposes export functionality to the frontend via Wails binding
 // (App.Export in app.go becomes pdf_export.Handler in frontend/wailsjs/go).
 type Handler struct{ svc Service }
@@ -18,4 +22,10 @@ func (h *Handler) ExportPlanPDF(planID string) (Response, error) {
 // decides to export for real.
 func (h *Handler) PreviewPlanPDF(planID string) (Response, error) {
 	return h.svc.PreviewPlanPDF(planID)
+}
+
+// OpenExportFolder opens the OS file manager at the directory containing
+// filePath (typically Response.Path from a prior ExportPlanPDF call).
+func (h *Handler) OpenExportFolder(filePath string) error {
+	return osutil.OpenContainingFolder(filePath)
 }

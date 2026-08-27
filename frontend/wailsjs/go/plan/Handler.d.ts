@@ -6,6 +6,8 @@ export function CreatePlan(arg1:plan.CreateRequest):Promise<plan.Response>;
 
 export function DeletePlan(arg1:string):Promise<void>;
 
+export function DuplicatePlan(arg1:plan.DuplicateRequest):Promise<plan.Response>;
+
 export function GetPlanFull(arg1:string):Promise<plan.FullResponse>;
 
 export function ListPlansByClient(arg1:string):Promise<Array<plan.Response>>;

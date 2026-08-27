@@ -62,6 +62,8 @@ const translations = {
     "client.open": "Deschide",
     "client.editPlanAria": "Editează plan",
     "client.deletePlanAria": "Șterge plan",
+    "client.duplicatePlanAria": "Duplică plan",
+    "client.copySuffix": "(Copie)",
     "client.newTitle": "Client nou",
     "client.editTitle": "Editează client",
     "client.deleteConfirm": "Sigur vrei să ștergi clientul „{name}”? Toate planurile lui vor fi șterse.",
@@ -114,6 +116,7 @@ const translations = {
     "plan.exporting": "Se exportă…",
     "plan.previewOpened": "Previzualizare deschisă — dacă nu s-a deschis automat vizualizatorul de PDF, fișierul e la:",
     "plan.pdfSaved": "PDF salvat:",
+    "plan.openFolder": "Deschide folderul",
     "plan.addDayVariant": "+ Variantă de zi",
     "plan.editDay": "Editează ziua",
     "plan.deleteDay": "Șterge ziua",
@@ -177,6 +180,24 @@ const translations = {
     "settings.themeSystem": "Automat (sistem)",
 
     "settings.languageSection": "Limbă",
+
+    "settings.backupSection": "Backup",
+    "settings.backupHint": "Salvează o copie a bazei de date locale (clienți, planuri, tot) într-o arhivă .zip, ca plasă de siguranță.",
+    "settings.backupNow": "Backup acum",
+    "settings.backingUp": "Se salvează…",
+    "settings.backupSaved": "Backup salvat:",
+    "settings.openFolder": "Deschide folderul",
+
+    "settings.profileSection": "Profilul tău",
+    "settings.trainerName": "Nume",
+    "settings.trainerNamePlaceholder": "Ex: Andreea Popescu",
+    "settings.trainerRole": "Profesie",
+    "settings.trainerRolePlaceholder": "Ex: Nutriționist",
+
+    "onboarding.title": "Bine ai venit!",
+    "onboarding.intro": "Înainte să începi, spune-ne cine ești — apare în bara laterală a aplicației.",
+    "onboarding.language": "Limbă",
+    "onboarding.save": "Continuă",
   },
   en: {
     "app.name": "NutriPlan",
@@ -228,6 +249,8 @@ const translations = {
     "client.open": "Open",
     "client.editPlanAria": "Edit plan",
     "client.deletePlanAria": "Delete plan",
+    "client.duplicatePlanAria": "Duplicate plan",
+    "client.copySuffix": "(Copy)",
     "client.newTitle": "New client",
     "client.editTitle": "Edit client",
     "client.deleteConfirm": "Are you sure you want to delete client \u201c{name}\u201d? All their plans will be deleted.",
@@ -280,6 +303,7 @@ const translations = {
     "plan.exporting": "Exporting…",
     "plan.previewOpened": "Preview opened — if the PDF viewer didn't open automatically, the file is at:",
     "plan.pdfSaved": "PDF saved:",
+    "plan.openFolder": "Open folder",
     "plan.addDayVariant": "+ Day variant",
     "plan.editDay": "Edit day",
     "plan.deleteDay": "Delete day",
@@ -343,6 +367,24 @@ const translations = {
     "settings.themeSystem": "Automatic (system)",
 
     "settings.languageSection": "Language",
+
+    "settings.backupSection": "Backup",
+    "settings.backupHint": "Save a copy of the local database (clients, plans, everything) into a .zip archive, as a safety net.",
+    "settings.backupNow": "Backup now",
+    "settings.backingUp": "Saving…",
+    "settings.backupSaved": "Backup saved:",
+    "settings.openFolder": "Open folder",
+
+    "settings.profileSection": "Your profile",
+    "settings.trainerName": "Name",
+    "settings.trainerNamePlaceholder": "E.g. Andreea Popescu",
+    "settings.trainerRole": "Profession",
+    "settings.trainerRolePlaceholder": "E.g. Nutritionist",
+
+    "onboarding.title": "Welcome!",
+    "onboarding.intro": "Before you start, tell us who you are — this shows up in the app's sidebar.",
+    "onboarding.language": "Language",
+    "onboarding.save": "Continue",
   },
 } as const;
 

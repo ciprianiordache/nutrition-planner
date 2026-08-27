@@ -42,6 +42,9 @@ func (f *fakePlanService) GetByIDFull(id string) (plan.FullResponse, error) {
 	return f.full, nil
 }
 func (f *fakePlanService) ListByClientID(string) ([]plan.Response, error) { return nil, nil }
+func (f *fakePlanService) Duplicate(plan.DuplicateRequest) (plan.Response, error) {
+	return plan.Response{}, nil
+}
 func (f *fakePlanService) Update(plan.UpdateRequest) (plan.Response, error) {
 	return plan.Response{}, nil
 }

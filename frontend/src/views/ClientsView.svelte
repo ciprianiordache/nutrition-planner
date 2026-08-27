@@ -211,6 +211,23 @@
     }
   }
 
+  let duplicatingPlanId = $state<string | null>(null);
+  let duplicateError = $state<string | null>(null);
+
+  async function handleDuplicatePlan(p: plan.Response) {
+    if (!selectedClientId) return;
+    duplicatingPlanId = p.id;
+    duplicateError = null;
+    try {
+      await planApi.duplicate({ sourcePlanId: p.id, title: `${p.title} ${$t("client.copySuffix")}` });
+      await loadPlansForClient(selectedClientId);
+    } catch (err) {
+      duplicateError = errorMessage(err);
+    } finally {
+      duplicatingPlanId = null;
+    }
+  }
+
   function openPlan(planId: string) {
     currentPlanId.set(planId);
     currentView.set("plan");
@@ -320,6 +337,9 @@
               {:else if plans.length === 0}
                 <p class="mt-3 text-sm text-muted-foreground">{$t("client.noPlansYet")}</p>
               {:else}
+                {#if duplicateError}
+                  <p class="mt-3 text-sm text-destructive">{duplicateError}</p>
+                {/if}
                 <ul class="mt-3 space-y-2">
                   {#each plans as p (p.id)}
                     <li class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-3">
@@ -335,6 +355,14 @@
                           class="rounded-md border border-border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-accent"
                         >
                           {$t("client.open")}
+                        </button>
+                        <button
+                          onclick={() => handleDuplicatePlan(p)}
+                          disabled={duplicatingPlanId === p.id}
+                          aria-label={$t("client.duplicatePlanAria")}
+                          class="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-60"
+                        >
+                          ⧉
                         </button>
                         <button
                           onclick={() => openEditPlan(p)}

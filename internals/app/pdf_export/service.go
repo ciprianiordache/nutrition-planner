@@ -12,6 +12,7 @@ import (
 	"nutrition-planner/internals/app/plan"
 	"nutrition-planner/internals/app/settings"
 	"nutrition-planner/internals/generator"
+	"nutrition-planner/internals/osutil"
 )
 
 // Service exports a plan (identified by ID) to a PDF file on disk, and can
@@ -94,7 +95,7 @@ func (s *service) PreviewPlanPDF(planID string) (Response, error) {
 	// registered, sandboxed environment, etc.) doesn't fail the whole
 	// operation - it's just logged, and the frontend still gets the path
 	// back in case it wants to show it or let the user open it manually.
-	if err := openInDefaultApp(stagingPath); err != nil {
+	if err := osutil.OpenInDefaultApp(stagingPath); err != nil {
 		s.log.Warn("could not auto-open pdf preview", "plan_id", planID, "path", stagingPath, "error", err)
 	}
 

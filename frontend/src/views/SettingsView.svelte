@@ -4,6 +4,7 @@
   import { settingsApi, errorMessage } from "../lib/api";
   import { t, locale, setLocale, type TranslationKey } from "../lib/i18n";
   import { uiTheme, setUITheme, type UITheme } from "../lib/theme";
+  import { profile } from "../lib/profile";
 
   // PDF_DEFAULTS mirrors config.GeneratorConfig's own defaults (config/
   // struct.go) - shown in the color pickers whenever the corresponding
@@ -64,6 +65,8 @@
   let saved = $state(false);
 
   let exportFolder = $state("");
+  let trainerName = $state("");
+  let trainerRole = $state("");
   let colors = $state<Record<ColorKey, string>>({ ...PDF_DEFAULTS });
 
   onMount(load);
@@ -83,6 +86,8 @@
 
   function applyLoadedSettings(s: settings.Response) {
     exportFolder = s.exportBaseDirectory ?? "";
+    trainerName = s.trainerName ?? "";
+    trainerRole = s.trainerRole ?? "";
     for (const { key } of COLOR_FIELDS) {
       colors[key] = s[key] || PDF_DEFAULTS[key];
     }
@@ -112,11 +117,16 @@
     saveError = null;
     saved = false;
     try {
-      const req: settings.UpdateRequest = { exportBaseDirectory: exportFolder };
+      const req: settings.UpdateRequest = {
+        exportBaseDirectory: exportFolder,
+        trainerName,
+        trainerRole,
+      };
       for (const { key } of COLOR_FIELDS) {
         req[key] = colors[key];
       }
       await settingsApi.update(req);
+      profile.set({ name: trainerName, role: trainerRole });
       saved = true;
     } catch (err) {
       saveError = errorMessage(err);
@@ -130,6 +140,35 @@
     { value: "dark", labelKey: "settings.themeDark" },
     { value: "system", labelKey: "settings.themeSystem" },
   ];
+
+  // --- Backup ------------------------------------------------------------
+
+  let backingUp = $state(false);
+  let backupError = $state<string | null>(null);
+  let backupPath = $state<string | null>(null);
+
+  async function handleBackup() {
+    backingUp = true;
+    backupError = null;
+    backupPath = null;
+    try {
+      backupPath = await settingsApi.backupDatabase();
+    } catch (err) {
+      backupError = errorMessage(err);
+    } finally {
+      backingUp = false;
+    }
+  }
+
+  async function handleOpenBackupFolder() {
+    if (!backupPath) return;
+    try {
+      await settingsApi.openBackupFolder(backupPath);
+    } catch {
+      // Best-effort - the backup itself already succeeded and the path is
+      // shown right next to this button either way.
+    }
+  }
 </script>
 
 <div class="mx-auto max-w-3xl px-6 py-10">
@@ -144,6 +183,35 @@
     <p class="mt-8 text-sm text-destructive">{loadError}</p>
   {:else}
     <div class="mt-8 space-y-8">
+      <!-- Profile -->
+      <section class="rounded-xl border border-border bg-card p-5">
+        <h2 class="font-display text-lg font-semibold">{$t("settings.profileSection")}</h2>
+        <div class="mt-4 grid grid-cols-2 gap-3">
+          <div>
+            <label class="mb-1 block text-xs font-medium text-muted-foreground" for="settings-trainer-name">
+              {$t("settings.trainerName")}
+            </label>
+            <input
+              id="settings-trainer-name"
+              bind:value={trainerName}
+              placeholder={$t("settings.trainerNamePlaceholder")}
+              class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
+            />
+          </div>
+          <div>
+            <label class="mb-1 block text-xs font-medium text-muted-foreground" for="settings-trainer-role">
+              {$t("settings.trainerRole")}
+            </label>
+            <input
+              id="settings-trainer-role"
+              bind:value={trainerRole}
+              placeholder={$t("settings.trainerRolePlaceholder")}
+              class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
+            />
+          </div>
+        </div>
+      </section>
+
       <!-- Export -->
       <section class="rounded-xl border border-border bg-card p-5">
         <h2 class="font-display text-lg font-semibold">{$t("settings.exportSection")}</h2>
@@ -228,6 +296,31 @@
             English
           </button>
         </div>
+      </section>
+
+      <!-- Backup -->
+      <section class="rounded-xl border border-border bg-card p-5">
+        <h2 class="font-display text-lg font-semibold">{$t("settings.backupSection")}</h2>
+        <p class="mt-1 text-xs text-muted-foreground">{$t("settings.backupHint")}</p>
+        <div class="mt-4 flex items-center gap-3">
+          <button
+            onclick={handleBackup}
+            disabled={backingUp}
+            class="rounded-md border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-accent disabled:opacity-60"
+          >
+            {backingUp ? $t("settings.backingUp") : $t("settings.backupNow")}
+          </button>
+        </div>
+        {#if backupError}
+          <p class="mt-3 text-sm text-destructive">{backupError}</p>
+        {:else if backupPath}
+          <p class="mt-3 text-sm text-primary">
+            {$t("settings.backupSaved")} <span class="font-medium">{backupPath}</span>
+            <button onclick={handleOpenBackupFolder} class="ml-2 font-medium text-primary hover:underline">
+              {$t("settings.openFolder")}
+            </button>
+          </p>
+        {/if}
       </section>
 
       {#if saveError}

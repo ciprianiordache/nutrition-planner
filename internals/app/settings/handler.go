@@ -4,6 +4,8 @@ import (
 	"context"
 	"log/slog"
 
+	"nutrition-planner/internals/database"
+
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -22,11 +24,14 @@ import (
 // context.Context can't be marshaled to/from JS) binding.
 type Handler struct {
 	svc Service
+	db  *database.Database
 	ctx context.Context
 	log *slog.Logger
 }
 
-func NewHandler(svc Service, log *slog.Logger) *Handler { return &Handler{svc: svc, log: log} }
+func NewHandler(svc Service, db *database.Database, log *slog.Logger) *Handler {
+	return &Handler{svc: svc, db: db, log: log}
+}
 
 // WithContext must be called once from App.startup - every method that
 // needs to show a native dialog is a no-op (returns an error) until then.

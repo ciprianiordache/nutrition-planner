@@ -248,3 +248,28 @@ func TestConnect_SQLite_CreatesMissingDataDirectory(t *testing.T) {
 		t.Fatalf("expected database file inside data directory: %v", err)
 	}
 }
+
+func TestSQLitePath_ReturnsFileLocation(t *testing.T) {
+	dir := t.TempDir()
+	cfg := config.DatabaseConfig{Driver: "sqlite", Name: "app"}
+	db := New(cfg, dir)
+
+	path, err := db.SQLitePath()
+	assert.NoError(t, err)
+	assert.Equal(t, filepath.Join(dir, "app.db"), path)
+}
+
+func TestSQLitePath_RejectsInMemory(t *testing.T) {
+	cfg := config.DatabaseConfig{Driver: "sqlite", Name: ":memory:"}
+	db := New(cfg, "")
+
+	_, err := db.SQLitePath()
+	assert.Error(t, err)
+}
+
+func TestSQLitePath_RejectsNonSQLiteDriver(t *testing.T) {
+	db := New(testConfig(), "") // testConfig() uses driver "postgres"
+
+	_, err := db.SQLitePath()
+	assert.Error(t, err)
+}

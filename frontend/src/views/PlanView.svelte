@@ -71,6 +71,17 @@
     }
   }
 
+  async function handleOpenFolder() {
+    if (!exportSuccess) return;
+    try {
+      await exportApi.openExportFolder(exportSuccess.path);
+    } catch {
+      // Best-effort - the export itself already succeeded and the path is
+      // shown right next to this button either way, so a failure to also
+      // auto-open the folder isn't worth surfacing as an error.
+    }
+  }
+
   // --- Previzualizare PDF ----------------------------------------------
 
   let previewing = $state(false);
@@ -429,6 +440,9 @@
       <p class="mt-3 text-sm text-primary">
         {$t("plan.pdfSaved")} <span class="font-medium">{exportSuccess.fileName}</span>
         <span class="text-muted-foreground">— {exportSuccess.path}</span>
+        <button onclick={handleOpenFolder} class="ml-2 font-medium text-primary hover:underline">
+          {$t("plan.openFolder")}
+        </button>
       </p>
     {:else if exportError}
       <p class="mt-3 text-sm text-destructive">{exportError}</p>

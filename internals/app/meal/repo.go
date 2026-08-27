@@ -18,6 +18,11 @@ type Repo interface {
 	Update(m *Meal) error
 	Delete(id string) error
 	DeleteByDayVariantID(dayVariantID string) error
+	// Duplicate creates a copy of source (name/note/order, plus every food
+	// and supplement it has) under dayVariantID, returning the new meal's
+	// ID. source is expected to already have Foods/Supplements populated
+	// (e.g. from ListByDayVariantIDFull) - Duplicate doesn't re-query them.
+	Duplicate(dayVariantID string, source Meal) (string, error)
 }
 
 type repo struct {
@@ -122,4 +127,53 @@ func (r *repo) Delete(id string) error {
 func (r *repo) DeleteByDayVariantID(dayVariantID string) error {
 	_, err := r.db.Exec(`DELETE FROM meals WHERE day_variant_id = ?`, dayVariantID)
 	return err
+}
+
+// Duplicate creates a new meal under dayVariantID with the same name/note/
+// order as source, then copies every one of source's foods and supplements
+// onto the new meal (fresh IDs throughout - nothing is shared with the
+// original). source.Foods/source.Supplements must already be populated
+// (see ListByDayVariantIDFull) - Duplicate treats an empty slice as
+// "no foods/supplements to copy", not as "go fetch them".
+func (r *repo) Duplicate(dayVariantID string, source Meal) (string, error) {
+	newMeal := &Meal{
+		DayVariantID: dayVariantID,
+		Name:         source.Name,
+		Note:         source.Note,
+		Order:        source.Order,
+	}
+	newID, err := r.depot.Create(newMeal)
+	if err != nil {
+		return "", err
+	}
+
+	for _, f := range source.Foods {
+		newFood := &food.Food{
+			MealID:              newID,
+			BaseFood:            f.BaseFood,
+			BaseQuantity:        f.BaseQuantity,
+			BaseUnit:            f.BaseUnit,
+			AlternativeFood:     f.AlternativeFood,
+			AlternativeQuantity: f.AlternativeQuantity,
+			AlternativeUnit:     f.AlternativeUnit,
+			Order:               f.Order,
+		}
+		if _, err := r.foodRepo.Create(newFood); err != nil {
+			return "", err
+		}
+	}
+
+	for _, s := range source.Supplements {
+		newSupplement := &supplement.Supplement{
+			MealID:     newID,
+			Supplement: s.Supplement,
+			Quantity:   s.Quantity,
+			Order:      s.Order,
+		}
+		if _, err := r.supplRepo.Create(newSupplement); err != nil {
+			return "", err
+		}
+	}
+
+	return newID, nil
 }

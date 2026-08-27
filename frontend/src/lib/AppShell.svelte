@@ -4,6 +4,7 @@
   import Logo from "./Logo.svelte";
   import { currentView } from "./stores";
   import { t, locale, setLocale } from "./i18n";
+  import { profile } from "./profile";
   import type { View } from "./types";
 
   let { children }: { children: Snippet } = $props();
@@ -53,8 +54,8 @@
           </button>
         </div>
         <div class="rounded-lg border border-border bg-card p-3">
-          <p class="text-xs font-medium">Mihai Bucur</p>
-          <p class="text-xs text-muted-foreground">{$t("nav.trainerRole")}</p>
+          <p class="text-xs font-medium">{$profile.name || "—"}</p>
+          <p class="text-xs text-muted-foreground">{$profile.role || $t("nav.trainerRole")}</p>
         </div>
       </div>
     </aside>

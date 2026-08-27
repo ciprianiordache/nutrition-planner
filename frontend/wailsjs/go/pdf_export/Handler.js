@@ -6,6 +6,10 @@ export function ExportPlanPDF(arg1) {
   return window['go']['pdf_export']['Handler']['ExportPlanPDF'](arg1);
 }
 
+export function OpenExportFolder(arg1) {
+  return window['go']['pdf_export']['Handler']['OpenExportFolder'](arg1);
+}
+
 export function PreviewPlanPDF(arg1) {
   return window['go']['pdf_export']['Handler']['PreviewPlanPDF'](arg1);
 }

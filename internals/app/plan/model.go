@@ -33,6 +33,14 @@ type UpdateRequest struct {
 	Footer                 string `json:"footer"`
 }
 
+// DuplicateRequest — input for Service.Duplicate. Title is supplied by the
+// frontend (rather than the backend inventing a suffix like "(Copy)")
+// specifically so it matches whatever language the UI is currently in.
+type DuplicateRequest struct {
+	SourcePlanID string `json:"sourcePlanId"`
+	Title        string `json:"title"`
+}
+
 // Response — the data sent to the frontend pentru Create/List/Update.
 // Modelul de domeniu (cu tag-uri `db`) nu ajunge niciodată direct în UI.
 type Response struct {

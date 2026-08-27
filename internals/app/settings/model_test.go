@@ -58,6 +58,8 @@ func TestApplyUpdate_NeverTouchesID(t *testing.T) {
 
 func TestToResponse_MapsEveryField(t *testing.T) {
 	s := Settings{
+		TrainerName:         "Andreea Popescu",
+		TrainerRole:         "Nutriționist",
 		ExportBaseDirectory: "/export",
 		ColorPageBackground: "1",
 		ColorCardBackground: "2",
@@ -75,6 +77,8 @@ func TestToResponse_MapsEveryField(t *testing.T) {
 	got := toResponse(s)
 
 	want := Response{
+		TrainerName:         "Andreea Popescu",
+		TrainerRole:         "Nutriționist",
 		ExportBaseDirectory: "/export",
 		ColorPageBackground: "1",
 		ColorCardBackground: "2",
@@ -90,5 +94,21 @@ func TestToResponse_MapsEveryField(t *testing.T) {
 	}
 	if got != want {
 		t.Errorf("got %+v, want %+v", got, want)
+	}
+}
+
+func TestApplyUpdate_TrainerNameAndRole(t *testing.T) {
+	s := Settings{}
+
+	applyUpdate(&s, UpdateRequest{
+		TrainerName: strp("Andreea Popescu"),
+		TrainerRole: strp("Nutriționist"),
+	})
+
+	if s.TrainerName != "Andreea Popescu" {
+		t.Errorf("TrainerName = %q, want %q", s.TrainerName, "Andreea Popescu")
+	}
+	if s.TrainerRole != "Nutriționist" {
+		t.Errorf("TrainerRole = %q, want %q", s.TrainerRole, "Nutriționist")
 	}
 }

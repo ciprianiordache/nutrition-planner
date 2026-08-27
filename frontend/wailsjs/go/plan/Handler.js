@@ -10,6 +10,10 @@ export function DeletePlan(arg1) {
   return window['go']['plan']['Handler']['DeletePlan'](arg1);
 }
 
+export function DuplicatePlan(arg1) {
+  return window['go']['plan']['Handler']['DuplicatePlan'](arg1);
+}
+
 export function GetPlanFull(arg1) {
   return window['go']['plan']['Handler']['GetPlanFull'](arg1);
 }

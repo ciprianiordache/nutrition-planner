@@ -157,7 +157,7 @@ func NewApp() *App {
 		Food:       food.NewHandler(foodSvc),
 		Supplement: supplement.NewHandler(supplementSvc),
 		Export:     pdf_export.NewHandler(exportSvc),
-		Settings:   settings.NewHandler(settingsSvc, lg),
+		Settings:   settings.NewHandler(settingsSvc, db, lg),
 	}
 }
 

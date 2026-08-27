@@ -4,4 +4,6 @@ import {pdf_export} from '../models';
 
 export function ExportPlanPDF(arg1:string):Promise<pdf_export.Response>;
 
+export function OpenExportFolder(arg1:string):Promise<void>;
+
 export function PreviewPlanPDF(arg1:string):Promise<pdf_export.Response>;

@@ -16,6 +16,12 @@ type Repo interface {
 	Update(dv *DayVariant) error
 	Delete(id string) error
 	DeleteByPlanID(planID string) error
+	// Duplicate creates a copy of source (name/order, plus every meal it
+	// has - each with its own foods/supplements) under planID, returning
+	// the new day variant's ID. source is expected to already have Meals
+	// populated (e.g. from ListByPlanIDFull) - Duplicate doesn't re-query
+	// them.
+	Duplicate(planID string, source DayVariant) (string, error)
 }
 
 type repo struct {
@@ -101,4 +107,29 @@ func (r *repo) Delete(id string) error {
 func (r *repo) DeleteByPlanID(planID string) error {
 	_, err := r.db.Exec(`DELETE FROM day_variants WHERE plan_id = ?`, planID)
 	return err
+}
+
+// Duplicate creates a new day variant under planID with the same name/
+// order as source, then duplicates every one of source's meals onto it
+// (each with fresh IDs, recursively duplicating their own foods/
+// supplements too - see meal.Repo.Duplicate). source.Meals must already
+// be populated (see ListByPlanIDFull).
+func (r *repo) Duplicate(planID string, source DayVariant) (string, error) {
+	newDayVariant := &DayVariant{
+		PlanID: planID,
+		Name:   source.Name,
+		Order:  source.Order,
+	}
+	newID, err := r.depot.Create(newDayVariant)
+	if err != nil {
+		return "", err
+	}
+
+	for _, m := range source.Meals {
+		if _, err := r.mealRepo.Duplicate(newID, m); err != nil {
+			return "", err
+		}
+	}
+
+	return newID, nil
 }

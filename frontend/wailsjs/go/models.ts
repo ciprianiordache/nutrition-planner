@@ -367,6 +367,20 @@ export namespace plan {
 	        this.footer = source["footer"];
 	    }
 	}
+	export class DuplicateRequest {
+	    sourcePlanId: string;
+	    title: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new DuplicateRequest(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.sourcePlanId = source["sourcePlanId"];
+	        this.title = source["title"];
+	    }
+	}
 	export class FullResponse {
 	    id: string;
 	    clientId: string;
@@ -481,6 +495,8 @@ export namespace plan {
 export namespace settings {
 	
 	export class Response {
+	    trainerName: string;
+	    trainerRole: string;
 	    exportBaseDirectory: string;
 	    colorPageBackground: string;
 	    colorCardBackground: string;
@@ -501,6 +517,8 @@ export namespace settings {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.trainerName = source["trainerName"];
+	        this.trainerRole = source["trainerRole"];
 	        this.exportBaseDirectory = source["exportBaseDirectory"];
 	        this.colorPageBackground = source["colorPageBackground"];
 	        this.colorCardBackground = source["colorCardBackground"];
@@ -517,6 +535,8 @@ export namespace settings {
 	    }
 	}
 	export class UpdateRequest {
+	    trainerName?: string;
+	    trainerRole?: string;
 	    exportBaseDirectory?: string;
 	    colorPageBackground?: string;
 	    colorCardBackground?: string;
@@ -537,6 +557,8 @@ export namespace settings {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.trainerName = source["trainerName"];
+	        this.trainerRole = source["trainerRole"];
 	        this.exportBaseDirectory = source["exportBaseDirectory"];
 	        this.colorPageBackground = source["colorPageBackground"];
 	        this.colorCardBackground = source["colorCardBackground"];

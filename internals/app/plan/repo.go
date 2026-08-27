@@ -15,6 +15,12 @@ type Repo interface {
 	ListByClientID(clientID string) ([]Plan, error)
 	Update(p *Plan) error
 	Delete(id string) error
+	// Duplicate creates a full copy of source (title, general
+	// recommendations, footer, every day variant/meal/food/supplement it
+	// has) for the same client, returning the new plan's ID. source is
+	// expected to come from GetByIDFull (its DayVariants must already be
+	// populated) - Duplicate doesn't re-query them.
+	Duplicate(source *Plan, newTitle string) (string, error)
 }
 
 type repo struct {
@@ -107,4 +113,31 @@ func (r *repo) Update(p *Plan) error {
 
 func (r *repo) Delete(id string) error {
 	return r.depot.Delete(&Plan{}, "id", id)
+}
+
+// Duplicate creates a new plan for source.ClientID titled newTitle, with
+// the same general recommendations/footer, then duplicates every one of
+// source's day variants onto it (each recursively duplicating its own
+// meals, and each meal its own foods/supplements - see
+// day_variant.Repo.Duplicate and meal.Repo.Duplicate). source.DayVariants
+// must already be populated (see GetByIDFull).
+func (r *repo) Duplicate(source *Plan, newTitle string) (string, error) {
+	newPlan := &Plan{
+		ClientID:               source.ClientID,
+		Title:                  newTitle,
+		GeneralRecommendations: source.GeneralRecommendations,
+		Footer:                 source.Footer,
+	}
+	newID, err := r.depot.Create(newPlan)
+	if err != nil {
+		return "", err
+	}
+
+	for _, dv := range source.DayVariants {
+		if _, err := r.dayVarRepo.Duplicate(newID, dv); err != nil {
+			return "", err
+		}
+	}
+
+	return newID, nil
 }

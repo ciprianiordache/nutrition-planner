@@ -13,6 +13,9 @@ type Service interface {
 	ListByClientID(clientID string) ([]Response, error)
 	Update(req UpdateRequest) (Response, error)
 	Delete(id string) error
+	// Duplicate creates a full, independent copy of an existing plan (every
+	// day variant/meal/food/supplement it has) for the same client.
+	Duplicate(req DuplicateRequest) (Response, error)
 }
 
 type service struct {
@@ -96,4 +99,29 @@ func (s *service) Delete(id string) error {
 	}
 	s.log.Info("plan deleted", "id", id)
 	return nil
+}
+
+func (s *service) Duplicate(req DuplicateRequest) (Response, error) {
+	if req.SourcePlanID == "" || req.Title == "" {
+		return Response{}, ErrInvalidInput
+	}
+
+	source, err := s.repo.GetByIDFull(req.SourcePlanID)
+	if err != nil {
+		return Response{}, err
+	}
+
+	newID, err := s.repo.Duplicate(source, req.Title)
+	if err != nil {
+		s.log.Error("failed to duplicate plan", "source_plan_id", req.SourcePlanID, "error", err)
+		return Response{}, fmt.Errorf("duplicate plan: %w", err)
+	}
+
+	created, err := s.repo.GetByID(newID)
+	if err != nil {
+		return Response{}, err
+	}
+
+	s.log.Info("plan duplicated", "source_plan_id", req.SourcePlanID, "new_plan_id", newID, "title", req.Title)
+	return toResponse(*created), nil
 }

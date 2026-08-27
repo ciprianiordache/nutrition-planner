@@ -26,6 +26,7 @@ export const planApi = {
   getFull: (id: string) => PlanAPI.GetPlanFull(id),
   update: (req: plan.UpdateRequest) => PlanAPI.UpdatePlan(req),
   remove: (id: string) => PlanAPI.DeletePlan(id),
+  duplicate: (req: plan.DuplicateRequest) => PlanAPI.DuplicatePlan(req),
 };
 
 export const dayVariantApi = {
@@ -59,12 +60,15 @@ export const supplementApi = {
 export const exportApi = {
   exportPlanPDF: (planId: string) => PdfExportAPI.ExportPlanPDF(planId),
   previewPlanPDF: (planId: string) => PdfExportAPI.PreviewPlanPDF(planId),
+  openExportFolder: (filePath: string) => PdfExportAPI.OpenExportFolder(filePath),
 };
 
 export const settingsApi = {
   get: () => SettingsAPI.GetSettings(),
   update: (req: settings.UpdateRequest) => SettingsAPI.UpdateSettings(req),
   chooseExportFolder: () => SettingsAPI.ChooseExportFolder(),
+  backupDatabase: () => SettingsAPI.BackupDatabase(),
+  openBackupFolder: (filePath: string) => SettingsAPI.OpenBackupFolder(filePath),
 };
 
 /** Extrage un mesaj de eroare lizibil dintr-un throw venit din Go (de obicei string). */

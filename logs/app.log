@@ -1,11 +1,175 @@
-{"time":"2026-08-26T20:03:10.9496708+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
-{"time":"2026-08-26T20:03:31.5971308+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
-{"time":"2026-08-26T20:03:37.9604714+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
-{"time":"2026-08-26T20:03:37.9954675+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
-{"time":"2026-08-27T14:38:24.4009393+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
-{"time":"2026-08-27T14:39:44.4053904+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
-{"time":"2026-08-27T14:42:45.9915964+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
-{"time":"2026-08-27T14:48:09.4291652+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
-{"time":"2026-08-27T14:48:34.306396+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
-{"time":"2026-08-27T14:48:43.8405231+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
-{"time":"2026-08-27T14:48:43.8856158+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-27T15:19:30.3583078+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:19:50.1843253+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:19:56.6003205+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:19:56.6346451+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-27T15:20:23.1462845+03:00","level":"INFO","msg":"plan preview generated","environment":"development","plan_id":"90b71d22-49cb-4a5c-8618-fd80cdc6ddea","client":"Andreea Popescu","path":"temp\\Meal Plan — February_2026-08-27.pdf"}
+{"time":"2026-08-27T15:20:37.8622295+03:00","level":"INFO","msg":"plan exported to pdf","environment":"development","plan_id":"90b71d22-49cb-4a5c-8618-fd80cdc6ddea","client":"Andreea Popescu","path":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)\\Andreea Popescu\\Meal Plan — February_2026-08-27.pdf"}
+{"time":"2026-08-27T15:20:52.9238659+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:20:54.391654+03:00","level":"INFO","msg":"plan exported to pdf","environment":"development","plan_id":"90b71d22-49cb-4a5c-8618-fd80cdc6ddea","client":"Andreea Popescu","path":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)\\Andreea Popescu\\Meal Plan — February_2026-08-27.pdf"}
+{"time":"2026-08-27T15:21:11.4251543+03:00","level":"INFO","msg":"plan exported to pdf","environment":"development","plan_id":"91f3971f-346b-4b50-99cc-33e7f4a2dd12","client":"Elena Radu","path":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)\\Elena Radu\\Meal Plan — Autumn_2026-08-27.pdf"}
+{"time":"2026-08-27T15:21:13.4590629+03:00","level":"INFO","msg":"plan preview generated","environment":"development","plan_id":"91f3971f-346b-4b50-99cc-33e7f4a2dd12","client":"Elena Radu","path":"temp\\Meal Plan — Autumn_2026-08-27.pdf"}
+{"time":"2026-08-27T15:22:43.5337219+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:23:18.9651966+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:23:28.2650717+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:23:28.3045537+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-27T15:33:58.3444137+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:34:34.2741356+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:34:39.5889819+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:34:39.6352944+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-27T15:35:05.0808473+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:35:14.6053095+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:35:15.3849885+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:35:15.8357503+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:35:16.4508206+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:35:28.9569908+03:00","level":"INFO","msg":"client updated","environment":"development","id":"d20a9291-bd68-4c7f-98d6-a5e69476d18d","name":"Andreea Popescu"}
+{"time":"2026-08-27T15:35:40.1006479+03:00","level":"INFO","msg":"client updated","environment":"development","id":"9d2ffe64-96f4-448d-b37b-8b6d064123eb","name":"Mihai Ionescu"}
+{"time":"2026-08-27T15:35:46.8890817+03:00","level":"INFO","msg":"client updated","environment":"development","id":"a4f48ed7-0520-4239-a542-f89bfe8add53","name":"Elena Radu"}
+{"time":"2026-08-27T15:35:56.2192984+03:00","level":"INFO","msg":"client updated","environment":"development","id":"d6000ba5-9872-4a85-b4f6-88ddd5b68f4c","name":"Vlad Marinescu"}
+{"time":"2026-08-27T15:36:59.2872125+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:36:59.9919657+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:00.4024263+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:01.1228464+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:01.6482888+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:02.2482064+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:02.7059856+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:03.2012177+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:03.6362499+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:04.0859552+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:04.4825444+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:04.9034482+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:05.3456989+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:06.4411224+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:06.9429867+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:07.4229021+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:07.9858312+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:08.7663738+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:09.2611863+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:09.6358429+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:10.1916852+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:10.6721811+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:11.1520056+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:11.6618244+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:12.2913258+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:13.0108938+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:13.6482616+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:14.3082672+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:14.8856453+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:15.388082+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:16.5431152+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:16.9565838+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:17.3536643+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:17.922908+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:18.3883217+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:18.8914059+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:19.7009402+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:21.2225848+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:22.4314275+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:25.5742212+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:37:26.3012607+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:48:43.8133207+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:50:47.4818354+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:51:07.184017+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:51:15.0905451+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T15:51:15.1231313+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-27T15:54:17.3804689+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:54:17.9559056+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:54:18.3231813+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:54:18.6900353+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T15:54:19.0951736+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:30:34.5879461+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:30:41.3397191+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:30:41.3736721+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-27T17:34:00.739305+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:34:20.7554324+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:34:27.265017+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:34:27.3001932+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-27T17:35:57.1978575+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:08.0648833+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:08.686917+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:09.1518323+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:09.5054569+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:09.7447503+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:09.9167448+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:10.0897966+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:10.2468858+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:10.4118335+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:10.6069984+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:10.8769405+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:11.4018397+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:11.86686+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:12.1520332+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:12.3998632+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:12.6098823+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:12.7967486+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:12.9767683+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:13.2253846+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:13.4719734+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:13.8169895+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:36:14.0268152+03:00","level":"ERROR","msg":"failed to update settings","environment":"development","error":"crud-depot: Update on \"settings\" failed: SQL logic error: no such column: trainer_name (1)"}
+{"time":"2026-08-27T17:39:26.7568186+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:39:46.1072416+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:39:52.3396668+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:39:52.3751769+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-27T17:39:59.2165368+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:40:17.1760231+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:40:17.8203114+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:40:18.6234642+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:40:19.1405564+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:40:20.1603378+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:41:58.1647114+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:42:17.5397187+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:42:23.7472294+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:42:23.7825265+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-27T17:42:28.0480043+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:28.5796223+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:29.1120433+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:30.1020801+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:30.544134+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:31.3026255+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:31.8047197+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:33.1921841+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:33.5677723+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:34.0920922+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:34.6840685+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:35.2689674+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:35.7640505+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:36.3190605+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:36.7782254+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:37.2421473+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:37.7824234+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:38.7958296+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:39.4700971+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:40.1975004+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:46.0551347+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:46.5572771+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:46.9774081+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:42:47.3607444+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T17:43:26.8428675+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:43:46.5940641+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:43:52.7827905+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T17:43:52.8198882+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-27T23:23:09.4483405+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T23:23:43.4174901+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T23:23:52.8893768+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T23:23:52.938254+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-27T23:24:14.5623064+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T23:25:01.9463763+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T23:25:02.6510064+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T23:25:03.1615711+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T23:25:03.7009085+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T23:25:04.1735311+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T23:25:05.3063519+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T23:25:06.2814761+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T23:25:24.2916065+03:00","level":"INFO","msg":"client created","environment":"development","id":"40ca248a-a15e-450f-bb2f-97035d55fac5","name":"Test Update"}
+{"time":"2026-08-27T23:25:28.9096574+03:00","level":"INFO","msg":"client deleted","environment":"development","id":"40ca248a-a15e-450f-bb2f-97035d55fac5"}
+{"time":"2026-08-27T23:26:14.6583489+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T23:26:34.4483537+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T23:26:40.7083051+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-27T23:26:40.7472141+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-27T23:27:07.9215631+03:00","level":"INFO","msg":"plan duplicated","environment":"development","source_plan_id":"f8c84c96-0248-4ec3-9ba0-f03bd3b046ba","new_plan_id":"caef0b53-f904-4e45-96b0-b245a5bcaa20","title":"Meal Plan — February (Copy)"}
+{"time":"2026-08-27T23:27:45.7880178+03:00","level":"INFO","msg":"plan duplicated","environment":"development","source_plan_id":"2f34c87a-e52d-43fe-8438-4a23179a19cc","new_plan_id":"be148998-650e-46c3-a924-ac39d2927600","title":"Meal Plan — January (Copy)"}
+{"time":"2026-08-27T23:28:01.9012495+03:00","level":"INFO","msg":"plan deleted","environment":"development","id":"be148998-650e-46c3-a924-ac39d2927600"}
+{"time":"2026-08-27T23:28:04.2261129+03:00","level":"INFO","msg":"plan deleted","environment":"development","id":"caef0b53-f904-4e45-96b0-b245a5bcaa20"}
+{"time":"2026-08-27T23:28:26.6432511+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T23:28:27.2361202+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-27T23:28:27.6564534+03:00","level":"INFO","msg":"settings updated","environment":"development"}

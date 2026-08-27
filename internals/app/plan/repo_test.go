@@ -76,3 +76,92 @@ func TestRepo_GetByIDFull(t *testing.T) {
 	require.Len(t, got.DayVariants[0].Meals[0].Supplements, 1)
 	require.Equal(t, "Oats", got.DayVariants[0].Meals[0].Foods[0].BaseFood)
 }
+
+func TestRepo_Duplicate_CopiesFullTreeWithFreshIDs(t *testing.T) {
+	db := testutil.NewDatabase(t)
+	clientID := testutil.SeedClient(t, db, &client.Client{Name: "Client", Weight: 80, Height: 180})
+
+	foodRepo := food.NewRepo(db)
+	supRepo := supplement.NewRepo(db)
+	mealRepo := meal.NewRepo(db, foodRepo, supRepo)
+	dvRepo := day_variant.NewRepo(db, mealRepo)
+	r := plan.NewRepo(db, dvRepo)
+
+	sourceID, err := r.Create(&plan.Plan{
+		ClientID:               clientID,
+		Title:                  "Original",
+		GeneralRecommendations: "Drink water",
+		Footer:                 "Some footer",
+	})
+	require.NoError(t, err)
+	dvID, err := dvRepo.Create(&day_variant.DayVariant{PlanID: sourceID, Name: "Training day", Order: 1})
+	require.NoError(t, err)
+	mealID, err := mealRepo.Create(&meal.Meal{DayVariantID: dvID, Name: "Breakfast", Note: "Early", Order: 1})
+	require.NoError(t, err)
+	_, err = foodRepo.Create(&food.Food{MealID: mealID, BaseFood: "Oats", BaseQuantity: 80, BaseUnit: "g", Order: 1})
+	require.NoError(t, err)
+	_, err = supRepo.Create(&supplement.Supplement{MealID: mealID, Supplement: "Omega 3", Quantity: 1, Order: 1})
+	require.NoError(t, err)
+
+	source, err := r.GetByIDFull(sourceID)
+	require.NoError(t, err)
+
+	newID, err := r.Duplicate(source, "Original (Copy)")
+	require.NoError(t, err)
+	require.NotEqual(t, sourceID, newID, "the duplicate must be a distinct plan, not the same row")
+
+	got, err := r.GetByIDFull(newID)
+	require.NoError(t, err)
+	require.Equal(t, "Original (Copy)", got.Title)
+	require.Equal(t, clientID, got.ClientID)
+	require.Equal(t, "Drink water", got.GeneralRecommendations)
+	require.Equal(t, "Some footer", got.Footer)
+
+	require.Len(t, got.DayVariants, 1)
+	require.NotEqual(t, dvID, got.DayVariants[0].ID, "the day variant must get a fresh ID too")
+	require.Equal(t, "Training day", got.DayVariants[0].Name)
+
+	require.Len(t, got.DayVariants[0].Meals, 1)
+	require.NotEqual(t, mealID, got.DayVariants[0].Meals[0].ID)
+	require.Equal(t, "Breakfast", got.DayVariants[0].Meals[0].Name)
+	require.Equal(t, "Early", got.DayVariants[0].Meals[0].Note)
+
+	require.Len(t, got.DayVariants[0].Meals[0].Foods, 1)
+	require.Equal(t, "Oats", got.DayVariants[0].Meals[0].Foods[0].BaseFood)
+	require.Equal(t, 80.0, got.DayVariants[0].Meals[0].Foods[0].BaseQuantity)
+
+	require.Len(t, got.DayVariants[0].Meals[0].Supplements, 1)
+	require.Equal(t, "Omega 3", got.DayVariants[0].Meals[0].Supplements[0].Supplement)
+
+	// The original must be completely untouched by duplicating it.
+	original, err := r.GetByIDFull(sourceID)
+	require.NoError(t, err)
+	require.Equal(t, "Original", original.Title)
+	require.Len(t, original.DayVariants, 1)
+	require.Equal(t, dvID, original.DayVariants[0].ID)
+}
+
+func TestRepo_Duplicate_WithNoDayVariants(t *testing.T) {
+	db := testutil.NewDatabase(t)
+	clientID := testutil.SeedClient(t, db, &client.Client{Name: "Client", Weight: 80, Height: 180})
+
+	foodRepo := food.NewRepo(db)
+	supRepo := supplement.NewRepo(db)
+	mealRepo := meal.NewRepo(db, foodRepo, supRepo)
+	dvRepo := day_variant.NewRepo(db, mealRepo)
+	r := plan.NewRepo(db, dvRepo)
+
+	sourceID, err := r.Create(&plan.Plan{ClientID: clientID, Title: "Empty plan"})
+	require.NoError(t, err)
+
+	source, err := r.GetByIDFull(sourceID)
+	require.NoError(t, err)
+
+	newID, err := r.Duplicate(source, "Empty plan (Copy)")
+	require.NoError(t, err)
+
+	got, err := r.GetByIDFull(newID)
+	require.NoError(t, err)
+	require.Equal(t, "Empty plan (Copy)", got.Title)
+	require.Empty(t, got.DayVariants)
+}

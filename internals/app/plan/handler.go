@@ -11,3 +11,6 @@ func (h *Handler) ListPlansByClient(clientID string) ([]Response, error) {
 }
 func (h *Handler) UpdatePlan(req UpdateRequest) (Response, error) { return h.svc.Update(req) }
 func (h *Handler) DeletePlan(id string) error                     { return h.svc.Delete(id) }
+func (h *Handler) DuplicatePlan(req DuplicateRequest) (Response, error) {
+	return h.svc.Duplicate(req)
+}
