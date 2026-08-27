@@ -478,6 +478,83 @@ export namespace plan {
 
 }
 
+export namespace settings {
+	
+	export class Response {
+	    exportBaseDirectory: string;
+	    colorPageBackground: string;
+	    colorCardBackground: string;
+	    colorCardBorder: string;
+	    colorPrimary: string;
+	    colorPrimaryLight: string;
+	    colorOnPrimary: string;
+	    colorText: string;
+	    colorMuted: string;
+	    colorTableHeader: string;
+	    colorDivider: string;
+	    uiTheme: string;
+	    language: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Response(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.exportBaseDirectory = source["exportBaseDirectory"];
+	        this.colorPageBackground = source["colorPageBackground"];
+	        this.colorCardBackground = source["colorCardBackground"];
+	        this.colorCardBorder = source["colorCardBorder"];
+	        this.colorPrimary = source["colorPrimary"];
+	        this.colorPrimaryLight = source["colorPrimaryLight"];
+	        this.colorOnPrimary = source["colorOnPrimary"];
+	        this.colorText = source["colorText"];
+	        this.colorMuted = source["colorMuted"];
+	        this.colorTableHeader = source["colorTableHeader"];
+	        this.colorDivider = source["colorDivider"];
+	        this.uiTheme = source["uiTheme"];
+	        this.language = source["language"];
+	    }
+	}
+	export class UpdateRequest {
+	    exportBaseDirectory?: string;
+	    colorPageBackground?: string;
+	    colorCardBackground?: string;
+	    colorCardBorder?: string;
+	    colorPrimary?: string;
+	    colorPrimaryLight?: string;
+	    colorOnPrimary?: string;
+	    colorText?: string;
+	    colorMuted?: string;
+	    colorTableHeader?: string;
+	    colorDivider?: string;
+	    uiTheme?: string;
+	    language?: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new UpdateRequest(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.exportBaseDirectory = source["exportBaseDirectory"];
+	        this.colorPageBackground = source["colorPageBackground"];
+	        this.colorCardBackground = source["colorCardBackground"];
+	        this.colorCardBorder = source["colorCardBorder"];
+	        this.colorPrimary = source["colorPrimary"];
+	        this.colorPrimaryLight = source["colorPrimaryLight"];
+	        this.colorOnPrimary = source["colorOnPrimary"];
+	        this.colorText = source["colorText"];
+	        this.colorMuted = source["colorMuted"];
+	        this.colorTableHeader = source["colorTableHeader"];
+	        this.colorDivider = source["colorDivider"];
+	        this.uiTheme = source["uiTheme"];
+	        this.language = source["language"];
+	    }
+	}
+
+}
+
 export namespace supplement {
 	
 	export class CreateRequest {

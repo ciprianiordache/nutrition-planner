@@ -7,6 +7,7 @@
   import ClientForm from "../lib/ClientForm.svelte";
   import PlanForm from "../lib/PlanForm.svelte";
   import { currentView, currentPlanId } from "../lib/stores";
+  import { t, TARGET_KEYS, type TranslationKey } from "../lib/i18n";
 
   let clients = $state<client.Response[]>([]);
   let loadingClients = $state(true);
@@ -51,6 +52,16 @@
       return matchesSearch && matchesTarget;
     })
   );
+
+  // targetLabel — obiectivele noi se salvează ca chei neutre ("weight_loss")
+  // și se traduc la afișare; clienți vechi, creați înainte de i18n, au
+  // încă text simplu în română ("Slăbire") stocat direct - afișăm acel text
+  // ca atare (fără traducere) în loc să-l ascundem sau să dăm eroare.
+  function targetLabel(target: string): string {
+    const key = `target.${target}` as TranslationKey;
+    const translated = $t(key);
+    return translated === key ? target : translated;
+  }
 
   onMount(loadClients);
 
@@ -209,45 +220,44 @@
 <div class="mx-auto max-w-5xl px-6 py-10">
   <header class="flex flex-wrap items-end justify-between gap-4">
     <div>
-      <h1 class="font-display text-3xl font-semibold tracking-tight">Clienți</h1>
+      <h1 class="font-display text-3xl font-semibold tracking-tight">{$t("client.title")}</h1>
       <p class="mt-1 text-sm text-muted-foreground">
-        {filteredClients.length} clienți · alege un client pentru a-i vedea planurile
+        {$t("client.subtitle", { count: filteredClients.length })}
       </p>
     </div>
     <button
       onclick={openCreateClient}
       class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
     >
-      + Client nou
+      {$t("client.new")}
     </button>
   </header>
 
    <div class="mt-8 flex gap-3">
     <input
       bind:value={searchQuery}
-      placeholder="Caută după nume…"
+      placeholder={$t("client.searchPlaceholder")}
       class="w-full max-w-sm rounded-md border border-input bg-card px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/40"
     />
     <select bind:value={targetFilter} class="rounded-md border border-input bg-card px-3 py-2 text-sm">
-      <option value="">Toate obiectivele</option>
-      <option value="Slăbire">Slăbire</option>
-      <option value="Masă musculară">Masă musculară</option>
-      <option value="Menținere">Menținere</option>
-      <option value="Recompoziție">Recompoziție</option>
+      <option value="">{$t("client.allTargets")}</option>
+      {#each TARGET_KEYS as key (key)}
+        <option value={key}>{$t(`target.${key}`)}</option>
+      {/each}
     </select>
   </div>
 
   {#if loadingClients}
-    <p class="mt-8 text-sm text-muted-foreground">Se încarcă clienții…</p>
+    <p class="mt-8 text-sm text-muted-foreground">{$t("client.loading")}</p>
   {:else if clientsError}
     <p class="mt-8 text-sm text-destructive">{clientsError}</p>
   {:else if clients.length === 0}
     <div class="mt-8 rounded-xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-      Niciun client încă. Adaugă primul client ca să începi.
+      {$t("client.empty")}
     </div>
   {:else if filteredClients.length === 0}
     <div class="mt-8 rounded-xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-      Niciun client nu corespunde căutării sau filtrului selectat.
+      {$t("client.noMatch")}
     </div>
   {:else}
     <ul class="mt-6 divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
@@ -269,21 +279,21 @@
               </div>
               {#if c.target}
                 <span class="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
-                  {c.target}
+                  {targetLabel(c.target)}
                 </span>
               {/if}
             </button>
             <span class="flex shrink-0 gap-1">
               <button
                 onclick={(e) => openEditClient(c, e)}
-                aria-label="Editează client"
+                aria-label={$t("client.editAria")}
                 class="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
               >
                 ✎
               </button>
               <button
                 onclick={(e) => openDeleteClient(c, e)}
-                aria-label="Șterge client"
+                aria-label={$t("client.deleteAria")}
                 class="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-destructive hover:text-destructive-foreground"
               >
                 🗑
@@ -294,21 +304,21 @@
           {#if selectedClientId === c.id}
             <div class="border-t border-border bg-muted/30 px-5 py-5">
               <div class="flex flex-wrap items-center justify-between gap-3">
-                <h3 class="font-display text-sm font-semibold">Planurile lui {c.name}</h3>
+                <h3 class="font-display text-sm font-semibold">{$t("client.plansOf", { name: c.name })}</h3>
                 <button
                   onclick={openCreatePlan}
                   class="rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium transition-colors hover:bg-accent"
                 >
-                  + Plan nou
+                  {$t("client.newPlan")}
                 </button>
               </div>
 
               {#if loadingPlans}
-                <p class="mt-3 text-sm text-muted-foreground">Se încarcă planurile…</p>
+                <p class="mt-3 text-sm text-muted-foreground">{$t("client.loadingPlans")}</p>
               {:else if plansError}
                 <p class="mt-3 text-sm text-destructive">{plansError}</p>
               {:else if plans.length === 0}
-                <p class="mt-3 text-sm text-muted-foreground">Niciun plan creat încă pentru acest client.</p>
+                <p class="mt-3 text-sm text-muted-foreground">{$t("client.noPlansYet")}</p>
               {:else}
                 <ul class="mt-3 space-y-2">
                   {#each plans as p (p.id)}
@@ -324,18 +334,18 @@
                           onclick={() => openPlan(p.id)}
                           class="rounded-md border border-border px-3 py-1.5 text-xs font-medium transition-colors hover:bg-accent"
                         >
-                          Deschide
+                          {$t("client.open")}
                         </button>
                         <button
                           onclick={() => openEditPlan(p)}
-                          aria-label="Editează plan"
+                          aria-label={$t("client.editPlanAria")}
                           class="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                         >
                           ✎
                         </button>
                         <button
                           onclick={() => openDeletePlan(p)}
-                          aria-label="Șterge plan"
+                          aria-label={$t("client.deletePlanAria")}
                           class="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-destructive hover:text-destructive-foreground"
                         >
                           🗑
@@ -353,7 +363,7 @@
   {/if}
 </div>
 
-<Modal open={showClientForm} title={editingClient ? "Editează client" : "Client nou"} onClose={() => (showClientForm = false)}>
+<Modal open={showClientForm} title={editingClient ? $t("client.editTitle") : $t("client.newTitle")} onClose={() => (showClientForm = false)}>
   <ClientForm
     initial={editingClient}
     submitting={savingClient}
@@ -365,9 +375,7 @@
 
 <ConfirmDialog
   open={deletingClient !== null}
-  message={deletingClient
-    ? `Sigur vrei să ștergi clientul „${deletingClient.name}”? Toate planurile lui vor fi șterse.`
-    : ""}
+  message={deletingClient ? $t("client.deleteConfirm", { name: deletingClient.name }) : ""}
   submitting={deletingClientBusy}
   error={deletingClientError}
   onCancel={() => (deletingClient = null)}
@@ -376,7 +384,7 @@
 
 <Modal
   open={showPlanForm}
-  title={editingPlan ? "Editează plan" : `Plan nou${selectedClient ? ` — ${selectedClient.name}` : ""}`}
+  title={editingPlan ? $t("client.editPlanTitle") : `${$t("client.newPlanTitle")}${selectedClient ? ` — ${selectedClient.name}` : ""}`}
   onClose={() => (showPlanForm = false)}
 >
   <PlanForm
@@ -390,7 +398,7 @@
 
 <ConfirmDialog
   open={deletingPlan !== null}
-  message={deletingPlan ? `Sigur vrei să ștergi planul „${deletingPlan.title}”?` : ""}
+  message={deletingPlan ? $t("client.deletePlanConfirm", { title: deletingPlan.title }) : ""}
   submitting={deletingPlanBusy}
   error={deletingPlanError}
   onCancel={() => (deletingPlan = null)}

@@ -1,1 +1,1 @@
-export type View = "clients" | "plan";
+export type View = "clients" | "plan" | "settings";

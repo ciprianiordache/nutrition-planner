@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"log/slog"
@@ -14,6 +15,7 @@ import (
 	"nutrition-planner/internals/app/meal"
 	"nutrition-planner/internals/app/pdf_export"
 	"nutrition-planner/internals/app/plan"
+	"nutrition-planner/internals/app/settings"
 	"nutrition-planner/internals/app/supplement"
 	"nutrition-planner/internals/database"
 	"nutrition-planner/internals/logger"
@@ -42,6 +44,7 @@ type App struct {
 	Food       *food.Handler
 	Supplement *supplement.Handler
 	Export     *pdf_export.Handler
+	Settings   *settings.Handler
 }
 
 // NewApp creates a new App application struct. It loads the configuration,
@@ -80,13 +83,15 @@ func NewApp() *App {
 	// environment so testing/experimenting never touches (or mixes with)
 	// real client data: nutrition-planner.db becomes
 	// nutrition-planner-testing.db, "NutriPlan Exports" becomes
-	// "NutriPlan Exports (testing)", etc. This MUST stay in sync with
-	// cmd/seed (and any future cmd/ tool) - that's exactly why the policy
-	// itself lives in config.Config.EnvironmentIsolation rather than being
-	// duplicated inline here.
-	dbCfg, envSuffix := cfg.EnvironmentIsolation()
+	// "NutriPlan Exports (testing)", etc. An empty Environment behaves
+	// like "production" (no suffix) - the field is optional in config.yaml.
+	envSuffix := ""
+	if cfg.App.Environment != "" && cfg.App.Environment != "production" {
+		envSuffix = fmt.Sprintf(" (%s)", cfg.App.Environment)
+		cfg.Database.Name = fmt.Sprintf("%s-%s", cfg.Database.Name, cfg.App.Environment)
+	}
 
-	db := database.New(dbCfg, cfg.App.DataDirectory)
+	db := database.New(cfg.Database, cfg.App.DataDirectory)
 	if err := db.Connect(); err != nil {
 		lg.Error("unable to connect to database", "error", err)
 		os.Exit(1)
@@ -107,6 +112,7 @@ func NewApp() *App {
 	dayVariantRepo := day_variant.NewRepo(db, mealRepo)
 	planRepo := plan.NewRepo(db, dayVariantRepo)
 	clientRepo := client.NewRepo(db)
+	settingsRepo := settings.NewRepo(db)
 
 	foodSvc := food.NewService(foodRepo, lg)
 	supplementSvc := supplement.NewService(supplementRepo, lg)
@@ -114,6 +120,7 @@ func NewApp() *App {
 	dayVariantSvc := day_variant.NewService(dayVariantRepo, lg)
 	planSvc := plan.NewService(planRepo, lg)
 	clientSvc := client.NewService(clientRepo, lg)
+	settingsSvc := settings.NewService(settingsRepo, lg)
 
 	// Exporting depends on the plan + client (it requires the plan's
 	// full tree and the client's name for folders/headers), not on
@@ -136,7 +143,7 @@ func NewApp() *App {
 	exportBaseDir += envSuffix
 	lg.Info("export configured", "base_directory", exportBaseDir)
 	exportRepo := pdf_export.NewRepo(exportBaseDir)
-	exportSvc := pdf_export.NewService(planSvc, clientSvc, exportRepo, cfg.Generator, cfg.App.TempDirectory, lg)
+	exportSvc := pdf_export.NewService(planSvc, clientSvc, settingsSvc, exportRepo, cfg.Generator, cfg.App.TempDirectory, lg)
 
 	return &App{
 		db:         db,
@@ -150,11 +157,14 @@ func NewApp() *App {
 		Food:       food.NewHandler(foodSvc),
 		Supplement: supplement.NewHandler(supplementSvc),
 		Export:     pdf_export.NewHandler(exportSvc),
+		Settings:   settings.NewHandler(settingsSvc, lg),
 	}
 }
 
 // ensureSchema creates the missing tables in the order dictated by foreign keys:
-// clients -> plans -> day_variants -> meals -> foods/supplements.
+// clients -> plans -> day_variants -> meals -> foods/supplements. settings
+// has no foreign keys (a standalone singleton row), so its position in the
+// list doesn't matter.
 // It is idempotent (CREATE TABLE IF NOT EXISTS), so it is safe to run
 // every time the application starts.
 func ensureSchema(db *database.Database) error {
@@ -166,13 +176,17 @@ func ensureSchema(db *database.Database) error {
 		meal.Meal{},
 		food.Food{},
 		supplement.Supplement{},
+		settings.Settings{},
 	)
 }
 
 // startup is called when the app starts. The context is saved
-// so we can call the runtime methods
+// so we can call the runtime methods - Settings.Handler needs it too, for
+// its native folder-picker dialog (Wails only exposes that on the Go
+// side, and only once a window context exists).
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	settings.WithContext(a.Settings, ctx)
 }
 
 // shutdown is called when the app terminates — close the

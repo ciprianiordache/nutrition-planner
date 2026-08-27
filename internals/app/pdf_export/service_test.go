@@ -15,6 +15,7 @@ import (
 	"nutrition-planner/internals/app/meal"
 	"nutrition-planner/internals/app/pdf_export"
 	"nutrition-planner/internals/app/plan"
+	"nutrition-planner/internals/app/settings"
 )
 
 // testLogger returns a *slog.Logger that discards everything - the tests
@@ -66,12 +67,36 @@ func (f *fakeClientService) Update(client.UpdateRequest) (client.Response, error
 }
 func (f *fakeClientService) Delete(string) error { return nil }
 
+type fakeSettingsService struct {
+	resp    settings.Response
+	respErr error
+}
+
+func (f *fakeSettingsService) Get() (settings.Response, error) {
+	if f.respErr != nil {
+		return settings.Response{}, f.respErr
+	}
+	return f.resp, nil
+}
+func (f *fakeSettingsService) Update(settings.UpdateRequest) (settings.Response, error) {
+	return settings.Response{}, nil
+}
+
 type fakeRepo struct {
 	dir    string
 	dirErr error
+	// gotBaseOverride/gotClientName capture the arguments of the most
+	// recent ClientExportDir call - this fake doesn't implement the
+	// override-vs-default resolution itself (that's the real Repo's job,
+	// covered in repo_test.go); it just records what it was asked for, so
+	// service tests can verify the service passes the right values through.
+	gotBaseOverride string
+	gotClientName   string
 }
 
-func (f *fakeRepo) ClientExportDir(string) (string, error) {
+func (f *fakeRepo) ClientExportDir(baseOverride, clientName string) (string, error) {
+	f.gotBaseOverride = baseOverride
+	f.gotClientName = clientName
 	if f.dirErr != nil {
 		return "", f.dirErr
 	}
@@ -142,6 +167,7 @@ func TestService_ExportPlanPDF_Success(t *testing.T) {
 	svc := pdf_export.NewService(
 		&fakePlanService{full: minimalFullPlan("client-1")},
 		&fakeClientService{resp: client.Response{ID: "client-1", Name: "Andreea Popescu", Weight: 62, Height: 168}},
+		&fakeSettingsService{},
 		&fakeRepo{dir: exportDir},
 		testGeneratorConfig(),
 		tempDir,
@@ -168,6 +194,7 @@ func TestService_ExportPlanPDF_StagingFileRemovedAfterMove(t *testing.T) {
 	svc := pdf_export.NewService(
 		&fakePlanService{full: minimalFullPlan("client-1")},
 		&fakeClientService{resp: client.Response{ID: "client-1", Name: "Andreea Popescu"}},
+		&fakeSettingsService{},
 		&fakeRepo{dir: exportDir},
 		testGeneratorConfig(),
 		tempDir,
@@ -192,6 +219,7 @@ func TestService_ExportPlanPDF_CreatesMissingTempDir(t *testing.T) {
 	svc := pdf_export.NewService(
 		&fakePlanService{full: minimalFullPlan("client-1")},
 		&fakeClientService{resp: client.Response{ID: "client-1", Name: "Andreea Popescu"}},
+		&fakeSettingsService{},
 		&fakeRepo{dir: exportDir},
 		testGeneratorConfig(),
 		tempDir,
@@ -207,6 +235,7 @@ func TestService_ExportPlanPDF_EmptyPlanID(t *testing.T) {
 	svc := pdf_export.NewService(
 		&fakePlanService{},
 		&fakeClientService{},
+		&fakeSettingsService{},
 		&fakeRepo{dir: t.TempDir()},
 		testGeneratorConfig(),
 		t.TempDir(),
@@ -224,6 +253,7 @@ func TestService_ExportPlanPDF_PlanLookupFails(t *testing.T) {
 	svc := pdf_export.NewService(
 		&fakePlanService{fullErr: wantErr},
 		&fakeClientService{},
+		&fakeSettingsService{},
 		&fakeRepo{dir: t.TempDir()},
 		testGeneratorConfig(),
 		t.TempDir(),
@@ -244,6 +274,7 @@ func TestService_ExportPlanPDF_ClientLookupFails(t *testing.T) {
 	svc := pdf_export.NewService(
 		&fakePlanService{full: minimalFullPlan("missing-client")},
 		&fakeClientService{respErr: wantErr},
+		&fakeSettingsService{},
 		&fakeRepo{dir: t.TempDir()},
 		testGeneratorConfig(),
 		t.TempDir(),
@@ -261,6 +292,7 @@ func TestService_ExportPlanPDF_RepoDirFails(t *testing.T) {
 	svc := pdf_export.NewService(
 		&fakePlanService{full: minimalFullPlan("client-1")},
 		&fakeClientService{resp: client.Response{ID: "client-1", Name: "Andreea Popescu"}},
+		&fakeSettingsService{},
 		&fakeRepo{dirErr: wantErr},
 		testGeneratorConfig(),
 		t.TempDir(),
@@ -280,6 +312,7 @@ func TestService_ExportPlanPDF_InvalidGeneratorConfig(t *testing.T) {
 	svc := pdf_export.NewService(
 		&fakePlanService{full: minimalFullPlan("client-1")},
 		&fakeClientService{resp: client.Response{ID: "client-1", Name: "Andreea Popescu"}},
+		&fakeSettingsService{},
 		&fakeRepo{dir: t.TempDir()},
 		cfg,
 		t.TempDir(),
@@ -292,6 +325,93 @@ func TestService_ExportPlanPDF_InvalidGeneratorConfig(t *testing.T) {
 	}
 }
 
+func TestService_ExportPlanPDF_SettingsLookupFails(t *testing.T) {
+	wantErr := errors.New("db unavailable")
+	svc := pdf_export.NewService(
+		&fakePlanService{full: minimalFullPlan("client-1")},
+		&fakeClientService{resp: client.Response{ID: "client-1", Name: "Andreea Popescu"}},
+		&fakeSettingsService{respErr: wantErr},
+		&fakeRepo{dir: t.TempDir()},
+		testGeneratorConfig(),
+		t.TempDir(),
+		testLogger(),
+	)
+
+	_, err := svc.ExportPlanPDF("plan-1")
+	if !errors.Is(err, wantErr) {
+		t.Errorf("expected wrapped %v, got %v", wantErr, err)
+	}
+}
+
+func TestService_ExportPlanPDF_SettingsThemeOverridesGeneratorConfig(t *testing.T) {
+	exportDir := t.TempDir()
+
+	svc := pdf_export.NewService(
+		&fakePlanService{full: minimalFullPlan("client-1")},
+		&fakeClientService{resp: client.Response{ID: "client-1", Name: "Andreea Popescu"}},
+		&fakeSettingsService{resp: settings.Response{ColorPrimary: "not-a-hex-color-but-nonempty"}},
+		&fakeRepo{dir: exportDir},
+		testGeneratorConfig(),
+		t.TempDir(),
+		testLogger(),
+	)
+
+	// The settings override is a deliberately invalid hex color - if
+	// applySettingsTheme is actually wired in (rather than the settings
+	// response being silently ignored), NewGenerator must reject it and
+	// the export must fail. A silent success here would mean the theme
+	// override isn't taking effect at all.
+	_, err := svc.ExportPlanPDF("plan-1")
+	if err == nil {
+		t.Fatal("expected the settings color override to reach the generator and fail on the invalid hex value")
+	}
+}
+
+func TestService_ExportPlanPDF_PassesSettingsExportDirOverrideToRepo(t *testing.T) {
+	repo := &fakeRepo{dir: t.TempDir()}
+
+	svc := pdf_export.NewService(
+		&fakePlanService{full: minimalFullPlan("client-1")},
+		&fakeClientService{resp: client.Response{ID: "client-1", Name: "Andreea Popescu"}},
+		&fakeSettingsService{resp: settings.Response{ExportBaseDirectory: "/custom/override"}},
+		repo,
+		testGeneratorConfig(),
+		t.TempDir(),
+		testLogger(),
+	)
+
+	if _, err := svc.ExportPlanPDF("plan-1"); err != nil {
+		t.Fatalf("ExportPlanPDF: %v", err)
+	}
+	if repo.gotBaseOverride != "/custom/override" {
+		t.Errorf("expected ClientExportDir to receive the settings override, got %q", repo.gotBaseOverride)
+	}
+	if repo.gotClientName != "Andreea Popescu" {
+		t.Errorf("expected ClientExportDir to receive the client name, got %q", repo.gotClientName)
+	}
+}
+
+func TestService_ExportPlanPDF_EmptySettingsExportDirPassesEmptyOverride(t *testing.T) {
+	repo := &fakeRepo{dir: t.TempDir()}
+
+	svc := pdf_export.NewService(
+		&fakePlanService{full: minimalFullPlan("client-1")},
+		&fakeClientService{resp: client.Response{ID: "client-1", Name: "Andreea Popescu"}},
+		&fakeSettingsService{}, // ExportBaseDirectory left empty -> Repo's own default should apply
+		repo,
+		testGeneratorConfig(),
+		t.TempDir(),
+		testLogger(),
+	)
+
+	if _, err := svc.ExportPlanPDF("plan-1"); err != nil {
+		t.Fatalf("ExportPlanPDF: %v", err)
+	}
+	if repo.gotBaseOverride != "" {
+		t.Errorf("expected an empty override to be passed through as empty, got %q", repo.gotBaseOverride)
+	}
+}
+
 // --- PreviewPlanPDF --------------------------------------------------
 
 func TestService_PreviewPlanPDF_Success(t *testing.T) {
@@ -301,6 +421,7 @@ func TestService_PreviewPlanPDF_Success(t *testing.T) {
 	svc := pdf_export.NewService(
 		&fakePlanService{full: minimalFullPlan("client-1")},
 		&fakeClientService{resp: client.Response{ID: "client-1", Name: "Andreea Popescu"}},
+		&fakeSettingsService{},
 		&fakeRepo{dir: exportDir},
 		testGeneratorConfig(),
 		tempDir,
@@ -329,6 +450,7 @@ func TestService_PreviewPlanPDF_EmptyPlanID(t *testing.T) {
 	svc := pdf_export.NewService(
 		&fakePlanService{},
 		&fakeClientService{},
+		&fakeSettingsService{},
 		&fakeRepo{dir: t.TempDir()},
 		testGeneratorConfig(),
 		t.TempDir(),
@@ -346,6 +468,7 @@ func TestService_PreviewPlanPDF_PlanLookupFails(t *testing.T) {
 	svc := pdf_export.NewService(
 		&fakePlanService{fullErr: wantErr},
 		&fakeClientService{},
+		&fakeSettingsService{},
 		&fakeRepo{dir: t.TempDir()},
 		testGeneratorConfig(),
 		t.TempDir(),

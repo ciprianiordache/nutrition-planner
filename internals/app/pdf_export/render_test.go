@@ -117,9 +117,33 @@ func TestRenderPlan_ProducesValidPDF(t *testing.T) {
 	}
 
 	p, c := fixturePlan()
-	renderPlan(gen, p, c)
+	renderPlan(gen, p, c, "ro")
 
 	path, err := gen.Save("render_test.pdf")
+	if err != nil {
+		t.Fatalf("Save: %v", err)
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("ReadFile: %v", err)
+	}
+	if len(data) < 5 || string(data[:5]) != "%PDF-" {
+		t.Fatalf("output is not a PDF (missing %%PDF- header)")
+	}
+}
+
+func TestRenderPlan_EnglishLabelsProduceValidPDF(t *testing.T) {
+	dir := t.TempDir()
+	gen, err := generator.NewGenerator(validGeneratorConfig(dir))
+	if err != nil {
+		t.Fatalf("NewGenerator: %v", err)
+	}
+
+	p, c := fixturePlan()
+	renderPlan(gen, p, c, "en")
+
+	path, err := gen.Save("render_test_en.pdf")
 	if err != nil {
 		t.Fatalf("Save: %v", err)
 	}

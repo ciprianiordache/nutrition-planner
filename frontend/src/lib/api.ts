@@ -5,7 +5,8 @@ import * as MealAPI from "../../wailsjs/go/meal/Handler";
 import * as FoodAPI from "../../wailsjs/go/food/Handler";
 import * as SupplementAPI from "../../wailsjs/go/supplement/Handler";
 import * as PdfExportAPI from "../../wailsjs/go/pdf_export/Handler";
-import type { client, plan, day_variant, meal, food, supplement } from "../../wailsjs/go/models";
+import * as SettingsAPI from "../../wailsjs/go/settings/Handler";
+import type { client, plan, day_variant, meal, food, supplement, settings } from "../../wailsjs/go/models";
 
 // Strat subțire peste bindingurile generate de Wails, ca să nu importăm
 // direct din wailsjs în componente — dacă se schimbă vreodată semnătura
@@ -58,6 +59,12 @@ export const supplementApi = {
 export const exportApi = {
   exportPlanPDF: (planId: string) => PdfExportAPI.ExportPlanPDF(planId),
   previewPlanPDF: (planId: string) => PdfExportAPI.PreviewPlanPDF(planId),
+};
+
+export const settingsApi = {
+  get: () => SettingsAPI.GetSettings(),
+  update: (req: settings.UpdateRequest) => SettingsAPI.UpdateSettings(req),
+  chooseExportFolder: () => SettingsAPI.ChooseExportFolder(),
 };
 
 /** Extrage un mesaj de eroare lizibil dintr-un throw venit din Go (de obicei string). */

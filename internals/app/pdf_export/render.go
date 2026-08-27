@@ -14,19 +14,22 @@ import (
 
 // renderPlan walks a fully-loaded plan (day variants -> meals -> foods /
 // supplements) and a client and issues the corresponding pdfgen calls onto
-// gen. This is the one place that knows about both the domain model and
-// the generic pdfgen primitives - kept as a pure function (no I/O) so it's
-// easy to unit test against fixture data.
-func renderPlan(gen *generator.Generator, p plan.FullResponse, c client.Response) {
+// gen, using the label set for language (from settings.Response.Language -
+// see labels.go). This is the one place that knows about both the domain
+// model and the generic pdfgen primitives - kept as a pure function (no
+// I/O) so it's easy to unit test against fixture data.
+func renderPlan(gen *generator.Generator, p plan.FullResponse, c client.Response, language string) {
+	labels := labelsFor(language)
+
 	gen.ClientHeader(c.Name, c.Target)
 	gen.Title(p.Title)
 
 	var kv [][2]string
 	if c.Weight > 0 {
-		kv = append(kv, [2]string{"Greutate", fmt.Sprintf("%s kg", formatQty(c.Weight))})
+		kv = append(kv, [2]string{labels.Weight, fmt.Sprintf("%s kg", formatQty(c.Weight))})
 	}
 	if c.Height > 0 {
-		kv = append(kv, [2]string{"Înălțime", fmt.Sprintf("%s cm", formatQty(c.Height))})
+		kv = append(kv, [2]string{labels.Height, fmt.Sprintf("%s cm", formatQty(c.Height))})
 	}
 	if len(kv) > 0 {
 		gen.KeyValueLine(kv)
@@ -53,11 +56,11 @@ func renderPlan(gen *generator.Generator, p plan.FullResponse, c client.Response
 
 			gen.MealHeader(m.Name, m.Note)
 			gen.Table(generator.TableData{
-				Headers:   []string{"Aliment", "Cantitate", "Alternativă", "Cantitate"},
+				Headers:   []string{labels.Food, labels.Quantity, labels.Alternative, labels.Quantity},
 				Rows:      foodRows(m.Foods),
 				ColWidths: []int{4, 2, 4, 2},
 			})
-			gen.SupplementsLine("Suplimente", supplementItems(m.Supplements))
+			gen.SupplementsLine(labels.Supplements, supplementItems(m.Supplements))
 
 			if i < len(dv.Meals)-1 {
 				gen.Spacer(3)

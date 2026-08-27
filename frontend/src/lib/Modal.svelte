@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
+  import { t } from "./i18n";
 
   let {
     open = false,
@@ -41,7 +42,7 @@
         <h2 class="font-display text-lg font-semibold">{title}</h2>
         <button
           onclick={onClose}
-          aria-label="Închide"
+          aria-label={$t("common.close")}
           class="rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
         >
           ✕

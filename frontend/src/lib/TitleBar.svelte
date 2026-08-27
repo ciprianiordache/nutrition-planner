@@ -2,6 +2,7 @@
   import { Minus, Square, X, Copy } from "@lucide/svelte";
   import Icon from "./Icon.svelte";
   import { WindowMinimise, WindowToggleMaximise, Quit } from "../../wailsjs/runtime/runtime";
+  import { t } from "./i18n";
 
   let maximized = $state(false);
 
@@ -26,19 +27,19 @@
   <div class="flex items-center gap-2.5">
     <Icon class="h-5 w-5" />
     <span class="font-display text-xs font-medium tracking-wide text-muted-foreground">
-      NutriPlan — planuri nutriționale
+      {$t("titlebar.appName")}
     </span>
   </div>
   <div class="flex h-full" style="--wails-draggable: no-drag">
     <button
-      aria-label="Minimizează"
+      aria-label={$t("titlebar.minimize")}
       onclick={minimize}
       class="flex h-full w-11 items-center justify-center text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
     >
       <Minus class="size-4" />
     </button>
     <button
-      aria-label={maximized ? "Restaurează" : "Maximizează"}
+      aria-label={maximized ? $t("titlebar.restore") : $t("titlebar.maximize")}
       onclick={toggleMaximize}
       class="flex h-full w-11 items-center justify-center text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
     >
@@ -49,7 +50,7 @@
       {/if}
     </button>
     <button
-      aria-label="Închide"
+      aria-label={$t("titlebar.close")}
       onclick={close}
       class="flex h-full w-11 items-center justify-center text-muted-foreground transition-colors hover:bg-destructive hover:text-destructive-foreground"
     >

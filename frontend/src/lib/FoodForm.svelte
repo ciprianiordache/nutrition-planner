@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { t } from "./i18n";
+
   export type FoodFormData = {
     baseFood: string;
     baseQuantity: number;
@@ -51,17 +53,17 @@
 <form onsubmit={submit} class="space-y-4">
   <div class="grid grid-cols-[1fr_auto_auto] gap-3">
     <div>
-      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-name">Aliment</label>
+      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-name">{$t("foodForm.food")}</label>
       <input
         id="food-name"
         bind:value={baseFood}
         required
-        placeholder="Ex: Piept de pui"
+        placeholder={$t("foodForm.foodPlaceholder")}
         class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
       />
     </div>
     <div class="w-24">
-      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-qty">Cantitate</label>
+      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-qty">{$t("common.quantity")}</label>
       <input
         id="food-qty"
         type="number"
@@ -73,7 +75,7 @@
       />
     </div>
     <div class="w-20">
-      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-unit">Unitate</label>
+      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-unit">{$t("common.unit")}</label>
       <input
         id="food-unit"
         bind:value={baseUnit}
@@ -86,22 +88,22 @@
 
   <label class="flex items-center gap-2 text-sm">
     <input type="checkbox" bind:checked={hasAlternative} class="rounded border-input" />
-    Adaugă alternativă
+    {$t("foodForm.addAlternative")}
   </label>
 
   {#if hasAlternative}
     <div class="grid grid-cols-[1fr_auto_auto] gap-3 rounded-md border border-dashed border-border p-3">
       <div>
-        <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-alt-name">Alternativă</label>
+        <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-alt-name">{$t("foodForm.alternative")}</label>
         <input
           id="food-alt-name"
           bind:value={alternativeFood}
-          placeholder="Ex: Somon"
+          placeholder={$t("foodForm.alternativePlaceholder")}
           class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
         />
       </div>
       <div class="w-24">
-        <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-alt-qty">Cantitate</label>
+        <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-alt-qty">{$t("common.quantity")}</label>
         <input
           id="food-alt-qty"
           type="number"
@@ -112,7 +114,7 @@
         />
       </div>
       <div class="w-20">
-        <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-alt-unit">Unitate</label>
+        <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-alt-unit">{$t("common.unit")}</label>
         <input
           id="food-alt-unit"
           bind:value={alternativeUnit}
@@ -124,7 +126,7 @@
   {/if}
 
   <div>
-    <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-order">Ordine</label>
+    <label class="mb-1 block text-xs font-medium text-muted-foreground" for="food-order">{$t("common.order")}</label>
     <input
       id="food-order"
       type="number"
@@ -145,14 +147,14 @@
       onclick={onCancel}
       class="rounded-md border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
     >
-      Anulează
+      {$t("common.cancel")}
     </button>
     <button
       type="submit"
       disabled={submitting}
       class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
     >
-      {submitting ? "Se salvează…" : initial ? "Salvează modificările" : "Adaugă aliment"}
+      {submitting ? $t("common.saving") : initial ? $t("common.saveChanges") : $t("foodForm.add")}
     </button>
   </div>
 </form>

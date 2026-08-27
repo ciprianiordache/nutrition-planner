@@ -9,6 +9,7 @@ import (
 	"nutrition-planner/internals/app/food"
 	"nutrition-planner/internals/app/meal"
 	"nutrition-planner/internals/app/plan"
+	"nutrition-planner/internals/app/settings"
 	"nutrition-planner/internals/app/supplement"
 	"nutrition-planner/internals/database"
 
@@ -37,6 +38,7 @@ func NewDatabase(t *testing.T) *database.Database {
 		meal.Meal{},
 		food.Food{},
 		supplement.Supplement{},
+		settings.Settings{},
 	}
 	if err := schema.ValidateModels(models...); err != nil {
 		t.Fatalf("validate application models: %v", err)

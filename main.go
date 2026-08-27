@@ -42,6 +42,7 @@ func main() {
 			app.Food,
 			app.Supplement,
 			app.Export,
+			app.Settings,
 		},
 	})
 

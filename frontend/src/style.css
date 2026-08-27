@@ -2,6 +2,8 @@
 @source "../src";
 @import "tw-animate-css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
@@ -72,6 +74,41 @@
   --sidebar-accent-foreground: oklch(0.3 0.05 150);
   --sidebar-border: oklch(0.9 0.014 110);
   --sidebar-ring: oklch(0.52 0.09 152);
+}
+
+/* Dark mode - same sage-green identity as :root, values inverted for a
+   dark background. Applied whenever <html> has the "dark" class (see
+   frontend/src/lib/theme.ts), not via prefers-color-scheme directly, so
+   the in-app Settings > Aspect toggle stays in full control regardless of
+   the OS theme. */
+.dark {
+  --background: oklch(0.18 0.012 145);
+  --foreground: oklch(0.92 0.01 100);
+  --card: oklch(0.22 0.014 145);
+  --card-foreground: oklch(0.92 0.01 100);
+  --popover: oklch(0.22 0.014 145);
+  --popover-foreground: oklch(0.92 0.01 100);
+  --primary: oklch(0.62 0.1 152);
+  --primary-foreground: oklch(0.15 0.02 152);
+  --secondary: oklch(0.28 0.02 130);
+  --secondary-foreground: oklch(0.9 0.02 120);
+  --muted: oklch(0.25 0.014 130);
+  --muted-foreground: oklch(0.68 0.02 110);
+  --accent: oklch(0.3 0.04 145);
+  --accent-foreground: oklch(0.92 0.02 130);
+  --destructive: oklch(0.62 0.19 27);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(0.32 0.016 130);
+  --input: oklch(0.32 0.016 130);
+  --ring: oklch(0.62 0.1 152);
+  --sidebar: oklch(0.16 0.012 145);
+  --sidebar-foreground: oklch(0.92 0.01 100);
+  --sidebar-primary: oklch(0.62 0.1 152);
+  --sidebar-primary-foreground: oklch(0.15 0.02 152);
+  --sidebar-accent: oklch(0.3 0.04 145);
+  --sidebar-accent-foreground: oklch(0.92 0.02 130);
+  --sidebar-border: oklch(0.32 0.016 130);
+  --sidebar-ring: oklch(0.62 0.1 152);
 }
 
 @layer base {

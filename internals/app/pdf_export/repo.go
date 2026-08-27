@@ -13,7 +13,12 @@ type Repo interface {
 	// ClientExportDir returns the directory PDFs for the given client
 	// should be written to, creating it (and any missing parents) if it
 	// doesn't exist yet. Safe to call repeatedly for the same client.
-	ClientExportDir(clientName string) (string, error)
+	//
+	// baseOverride, when non-empty, is used as the root export folder
+	// instead of the Repo's configured default - this is how a live
+	// settings.ExportBaseDirectory takes effect without restarting the
+	// app or rebuilding the Repo.
+	ClientExportDir(baseOverride, clientName string) (string, error)
 }
 
 type repo struct {
@@ -45,8 +50,12 @@ func DefaultBaseDirectory() (string, error) {
 	return filepath.Join(home, "Desktop", "NutriPlan Exports"), nil
 }
 
-func (r *repo) ClientExportDir(clientName string) (string, error) {
-	dir := filepath.Join(r.baseDir, sanitizePathSegment(clientName, "client"))
+func (r *repo) ClientExportDir(baseOverride, clientName string) (string, error) {
+	base := r.baseDir
+	if baseOverride != "" {
+		base = baseOverride
+	}
+	dir := filepath.Join(base, sanitizePathSegment(clientName, "client"))
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return "", fmt.Errorf("create export directory %q: %w", dir, err)
 	}

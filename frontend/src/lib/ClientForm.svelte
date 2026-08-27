@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { t } from "./i18n";
+  import { TARGET_KEYS } from "./i18n";
+
   export type ClientFormData = {
     name: string;
     weight: number;
@@ -34,19 +37,19 @@
 
 <form onsubmit={submit} class="space-y-4">
   <div>
-    <label class="mb-1 block text-xs font-medium text-muted-foreground" for="client-name">Nume</label>
+    <label class="mb-1 block text-xs font-medium text-muted-foreground" for="client-name">{$t("clientForm.name")}</label>
     <input
       id="client-name"
       bind:value={name}
       required
-      placeholder="Ex: Andreea Popescu"
+      placeholder={$t("clientForm.namePlaceholder")}
       class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
     />
   </div>
 
   <div class="grid grid-cols-2 gap-3">
     <div>
-      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="client-weight">Greutate (kg)</label>
+      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="client-weight">{$t("clientForm.weight")}</label>
       <input
         id="client-weight"
         type="number"
@@ -58,7 +61,7 @@
       />
     </div>
     <div>
-      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="client-height">Înălțime (cm)</label>
+      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="client-height">{$t("clientForm.height")}</label>
       <input
         id="client-height"
         type="number"
@@ -72,17 +75,16 @@
   </div>
 
   <div>
-    <label class="mb-1 block text-xs font-medium text-muted-foreground" for="client-target">Obiectiv</label>
+    <label class="mb-1 block text-xs font-medium text-muted-foreground" for="client-target">{$t("clientForm.target")}</label>
     <select
       id="client-target"
       bind:value={target}
       class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
     >
-      <option value="">Alege obiectivul</option>
-      <option value="Slăbire">Slăbire</option>
-      <option value="Masă musculară">Masă musculară</option>
-      <option value="Menținere">Menținere</option>
-      <option value="Recompoziție">Recompoziție</option>
+      <option value="">{$t("clientForm.chooseTarget")}</option>
+      {#each TARGET_KEYS as key (key)}
+        <option value={key}>{$t(`target.${key}`)}</option>
+      {/each}
     </select>
   </div>
 
@@ -96,14 +98,14 @@
       onclick={onCancel}
       class="rounded-md border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
     >
-      Anulează
+      {$t("common.cancel")}
     </button>
     <button
       type="submit"
       disabled={submitting}
       class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
     >
-      {submitting ? "Se salvează…" : initial ? "Salvează modificările" : "Salvează client"}
+      {submitting ? $t("common.saving") : initial ? $t("common.saveChanges") : $t("clientForm.saveClient")}
     </button>
   </div>
 </form>

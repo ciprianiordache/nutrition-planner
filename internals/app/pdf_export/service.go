@@ -10,6 +10,7 @@ import (
 	"nutrition-planner/config"
 	"nutrition-planner/internals/app/client"
 	"nutrition-planner/internals/app/plan"
+	"nutrition-planner/internals/app/settings"
 	"nutrition-planner/internals/generator"
 )
 
@@ -31,13 +32,15 @@ type Service interface {
 }
 
 type service struct {
-	planSvc   plan.Service
-	clientSvc client.Service
-	repo      Repo
+	planSvc     plan.Service
+	clientSvc   client.Service
+	settingsSvc settings.Service
+	repo        Repo
 	// genCfg is the base pdfgen configuration (theme, margins, page size)
-	// loaded once from the app config. OutputDirectory is overridden per
-	// render with a scratch directory (tempDir) or the client's export
-	// directory, depending on the operation.
+	// loaded once from config.yaml - it's the fallback for any color the
+	// user hasn't overridden from the Settings screen. OutputDirectory is
+	// overridden per render with a scratch directory (tempDir) or the
+	// client's export directory, depending on the operation.
 	genCfg config.GeneratorConfig
 	// tempDir is where every PDF gets rendered first (config.AppConfig.
 	// TempDirectory) - both the export staging file and preview files
@@ -46,8 +49,8 @@ type service struct {
 	log     *slog.Logger
 }
 
-func NewService(planSvc plan.Service, clientSvc client.Service, repo Repo, genCfg config.GeneratorConfig, tempDir string, log *slog.Logger) Service {
-	return &service{planSvc: planSvc, clientSvc: clientSvc, repo: repo, genCfg: genCfg, tempDir: tempDir, log: log}
+func NewService(planSvc plan.Service, clientSvc client.Service, settingsSvc settings.Service, repo Repo, genCfg config.GeneratorConfig, tempDir string, log *slog.Logger) Service {
+	return &service{planSvc: planSvc, clientSvc: clientSvc, settingsSvc: settingsSvc, repo: repo, genCfg: genCfg, tempDir: tempDir, log: log}
 }
 
 func (s *service) ExportPlanPDF(planID string) (Response, error) {
@@ -55,12 +58,12 @@ func (s *service) ExportPlanPDF(planID string) (Response, error) {
 		return Response{}, ErrInvalidInput
 	}
 
-	stagingPath, fileName, clientName, err := s.renderPDF(planID)
+	stagingPath, fileName, clientName, userSettings, err := s.renderPDF(planID)
 	if err != nil {
 		return Response{}, err
 	}
 
-	dir, err := s.repo.ClientExportDir(clientName)
+	dir, err := s.repo.ClientExportDir(userSettings.ExportBaseDirectory, clientName)
 	if err != nil {
 		s.log.Error("pdf export failed: could not resolve export directory", "plan_id", planID, "client", clientName, "error", err)
 		return Response{}, fmt.Errorf("resolve export directory: %w", err)
@@ -81,7 +84,7 @@ func (s *service) PreviewPlanPDF(planID string) (Response, error) {
 		return Response{}, ErrInvalidInput
 	}
 
-	stagingPath, fileName, clientName, err := s.renderPDF(planID)
+	stagingPath, fileName, clientName, _, err := s.renderPDF(planID)
 	if err != nil {
 		return Response{}, err
 	}
@@ -99,49 +102,57 @@ func (s *service) PreviewPlanPDF(planID string) (Response, error) {
 	return Response{FileName: fileName, Path: stagingPath}, nil
 }
 
-// renderPDF loads planID's full plan tree and client, and renders it as a
-// PDF into a scratch file under s.tempDir. It's shared by ExportPlanPDF
-// (which then moves the result into the client's export folder) and
-// PreviewPlanPDF (which leaves it where it is) - every failure mode
-// (missing plan/client, bad generator config, disk errors) only needs to
-// be handled and logged in one place.
-func (s *service) renderPDF(planID string) (stagingPath, fileName, clientName string, err error) {
+// renderPDF loads planID's full plan tree, its client, and the current
+// user settings, then renders the plan as a PDF into a scratch file under
+// s.tempDir using the effective theme (config.yaml defaults overlaid with
+// any Settings-screen overrides). It's shared by ExportPlanPDF (which then
+// moves the result into the client's export folder, using
+// userSettings.ExportBaseDirectory if set) and PreviewPlanPDF (which
+// leaves it where it is) - every failure mode only needs to be handled and
+// logged in one place.
+func (s *service) renderPDF(planID string) (stagingPath, fileName, clientName string, userSettings settings.Response, err error) {
 	p, err := s.planSvc.GetByIDFull(planID)
 	if err != nil {
 		s.log.Error("pdf render failed: could not load plan", "plan_id", planID, "error", err)
-		return "", "", "", fmt.Errorf("load plan: %w", err)
+		return "", "", "", settings.Response{}, fmt.Errorf("load plan: %w", err)
 	}
 
 	c, err := s.clientSvc.GetByID(p.ClientID)
 	if err != nil {
 		s.log.Error("pdf render failed: could not load client", "plan_id", planID, "client_id", p.ClientID, "error", err)
-		return "", "", "", fmt.Errorf("load client: %w", err)
+		return "", "", "", settings.Response{}, fmt.Errorf("load client: %w", err)
+	}
+
+	userSettings, err = s.settingsSvc.Get()
+	if err != nil {
+		s.log.Error("pdf render failed: could not load settings", "plan_id", planID, "error", err)
+		return "", "", "", settings.Response{}, fmt.Errorf("load settings: %w", err)
 	}
 
 	if err := os.MkdirAll(s.tempDir, 0o755); err != nil {
 		s.log.Error("pdf render failed: could not create temp directory", "plan_id", planID, "temp_dir", s.tempDir, "error", err)
-		return "", "", "", fmt.Errorf("create temp directory: %w", err)
+		return "", "", "", settings.Response{}, fmt.Errorf("create temp directory: %w", err)
 	}
 
-	cfg := s.genCfg
+	cfg := applySettingsTheme(s.genCfg, userSettings)
 	cfg.OutputDirectory = s.tempDir
 
 	gen, err := generator.NewGenerator(cfg)
 	if err != nil {
 		s.log.Error("pdf render failed: could not initialize pdf generator", "plan_id", planID, "error", err)
-		return "", "", "", fmt.Errorf("init pdf generator: %w", err)
+		return "", "", "", settings.Response{}, fmt.Errorf("init pdf generator: %w", err)
 	}
 
-	renderPlan(gen, p, c)
+	renderPlan(gen, p, c, userSettings.Language)
 
 	fileName = buildFileName(p.Title)
 	stagingPath, err = gen.Save(fileName)
 	if err != nil {
 		s.log.Error("pdf render failed: could not save pdf", "plan_id", planID, "file_name", fileName, "error", err)
-		return "", "", "", fmt.Errorf("save pdf: %w", err)
+		return "", "", "", settings.Response{}, fmt.Errorf("save pdf: %w", err)
 	}
 
-	return stagingPath, fileName, c.Name, nil
+	return stagingPath, fileName, c.Name, userSettings, nil
 }
 
 // buildFileName derives a filesystem-safe PDF name from the plan title,

@@ -12,7 +12,7 @@ func TestRepo_ClientExportDir_CreatesDirectory(t *testing.T) {
 	base := t.TempDir()
 	repo := pdf_export.NewRepo(base)
 
-	dir, err := repo.ClientExportDir("Andreea Popescu")
+	dir, err := repo.ClientExportDir("", "Andreea Popescu")
 	if err != nil {
 		t.Fatalf("ClientExportDir: %v", err)
 	}
@@ -35,7 +35,7 @@ func TestRepo_ClientExportDir_SanitizesUnsafeCharacters(t *testing.T) {
 	base := t.TempDir()
 	repo := pdf_export.NewRepo(base)
 
-	dir, err := repo.ClientExportDir(`Client/With:Bad*Chars`)
+	dir, err := repo.ClientExportDir("", `Client/With:Bad*Chars`)
 	if err != nil {
 		t.Fatalf("ClientExportDir: %v", err)
 	}
@@ -55,11 +55,11 @@ func TestRepo_ClientExportDir_IdempotentForSameClient(t *testing.T) {
 	base := t.TempDir()
 	repo := pdf_export.NewRepo(base)
 
-	dir1, err := repo.ClientExportDir("Mihai Ionescu")
+	dir1, err := repo.ClientExportDir("", "Mihai Ionescu")
 	if err != nil {
 		t.Fatalf("ClientExportDir (1st call): %v", err)
 	}
-	dir2, err := repo.ClientExportDir("Mihai Ionescu")
+	dir2, err := repo.ClientExportDir("", "Mihai Ionescu")
 	if err != nil {
 		t.Fatalf("ClientExportDir (2nd call): %v", err)
 	}
@@ -73,17 +73,51 @@ func TestRepo_ClientExportDir_DifferentClientsGetDifferentDirs(t *testing.T) {
 	base := t.TempDir()
 	repo := pdf_export.NewRepo(base)
 
-	dirA, err := repo.ClientExportDir("Client A")
+	dirA, err := repo.ClientExportDir("", "Client A")
 	if err != nil {
 		t.Fatalf("ClientExportDir: %v", err)
 	}
-	dirB, err := repo.ClientExportDir("Client B")
+	dirB, err := repo.ClientExportDir("", "Client B")
 	if err != nil {
 		t.Fatalf("ClientExportDir: %v", err)
 	}
 
 	if dirA == dirB {
 		t.Errorf("expected different clients to get different directories, both got %q", dirA)
+	}
+}
+
+func TestRepo_ClientExportDir_BaseOverrideWins(t *testing.T) {
+	configuredBase := t.TempDir()
+	overrideBase := t.TempDir()
+	repo := pdf_export.NewRepo(configuredBase)
+
+	dir, err := repo.ClientExportDir(overrideBase, "Andreea Popescu")
+	if err != nil {
+		t.Fatalf("ClientExportDir: %v", err)
+	}
+
+	want := filepath.Join(overrideBase, "Andreea Popescu")
+	if dir != want {
+		t.Errorf("dir = %q, want %q (override should win over the configured base)", dir, want)
+	}
+	if _, err := os.Stat(want); err != nil {
+		t.Fatalf("expected the override directory to have been created: %v", err)
+	}
+}
+
+func TestRepo_ClientExportDir_EmptyOverrideUsesConfiguredBase(t *testing.T) {
+	configuredBase := t.TempDir()
+	repo := pdf_export.NewRepo(configuredBase)
+
+	dir, err := repo.ClientExportDir("", "Andreea Popescu")
+	if err != nil {
+		t.Fatalf("ClientExportDir: %v", err)
+	}
+
+	want := filepath.Join(configuredBase, "Andreea Popescu")
+	if dir != want {
+		t.Errorf("dir = %q, want %q", dir, want)
 	}
 }
 

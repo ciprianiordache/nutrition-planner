@@ -1,11 +1,12 @@
 <script lang="ts">
   import Modal from "./Modal.svelte";
+  import { t } from "./i18n";
 
   let {
     open = false,
-    title = "Confirmă ștergerea",
+    title,
     message,
-    confirmLabel = "Șterge",
+    confirmLabel,
     submitting = false,
     error = null,
     onConfirm,
@@ -22,7 +23,7 @@
   } = $props();
 </script>
 
-<Modal {open} {title} onClose={onCancel}>
+<Modal {open} title={title ?? $t("common.confirmDeleteTitle")} onClose={onCancel}>
   <p class="text-sm text-muted-foreground">{message}</p>
 
   {#if error}
@@ -35,7 +36,7 @@
       onclick={onCancel}
       class="rounded-md border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
     >
-      Anulează
+      {$t("common.cancel")}
     </button>
     <button
       type="button"
@@ -43,7 +44,7 @@
       onclick={onConfirm}
       class="rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground transition-colors hover:bg-destructive/90 disabled:opacity-60"
     >
-      {submitting ? "Se șterge…" : confirmLabel}
+      {submitting ? $t("common.deleting") : (confirmLabel ?? $t("common.delete"))}
     </button>
   </div>
 </Modal>

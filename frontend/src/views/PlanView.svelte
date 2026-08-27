@@ -2,6 +2,7 @@
   import type { plan, day_variant, meal, food, supplement } from "../../wailsjs/go/models";
   import { planApi, dayVariantApi, mealApi, foodApi, supplementApi, exportApi, errorMessage } from "../lib/api";
   import { currentPlanId, currentView } from "../lib/stores";
+  import { t } from "../lib/i18n";
   import Modal from "../lib/Modal.svelte";
   import ConfirmDialog from "../lib/ConfirmDialog.svelte";
   import DayVariantForm from "../lib/DayVariantForm.svelte";
@@ -364,17 +365,17 @@
 
 {#if !planId}
   <div class="mx-auto max-w-5xl px-6 py-10">
-    <p class="text-sm text-muted-foreground">Niciun plan selectat.</p>
+    <p class="text-sm text-muted-foreground">{$t("plan.noneSelected")}</p>
     <button
       onclick={backToClients}
       class="mt-4 rounded-md border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
     >
-      ← Înapoi la clienți
+      {$t("plan.backToClients")}
     </button>
   </div>
 {:else if loading}
   <div class="mx-auto max-w-5xl px-6 py-10">
-    <p class="text-sm text-muted-foreground">Se încarcă planul…</p>
+    <p class="text-sm text-muted-foreground">{$t("plan.loading")}</p>
   </div>
 {:else if loadError}
   <div class="mx-auto max-w-5xl px-6 py-10">
@@ -383,12 +384,12 @@
       onclick={backToClients}
       class="mt-4 rounded-md border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
     >
-      ← Înapoi la clienți
+      {$t("plan.backToClients")}
     </button>
   </div>
 {:else if planFull}
   <div class="mx-auto max-w-5xl px-6 py-10">
-    <button onclick={backToClients} class="text-xs text-muted-foreground hover:underline">← Înapoi la clienți</button>
+    <button onclick={backToClients} class="text-xs text-muted-foreground hover:underline">{$t("plan.backToClients")}</button>
 
     <header class="mt-1 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
       <div>
@@ -403,14 +404,14 @@
           disabled={previewing}
           class="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-60"
         >
-          {previewing ? "Se pregătește…" : "Previzualizare"}
+          {previewing ? $t("plan.previewing") : $t("plan.preview")}
         </button>
         <button
           onclick={handleExportPDF}
           disabled={exporting}
           class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
         >
-          {exporting ? "Se exportă…" : "Export PDF"}
+          {exporting ? $t("plan.exporting") : $t("plan.exportPdf")}
         </button>
       </div>
     </header>
@@ -419,14 +420,14 @@
       <p class="mt-3 text-sm text-destructive">{previewError}</p>
     {:else if previewSuccess}
       <p class="mt-3 text-sm text-muted-foreground">
-        Previzualizare deschisă — dacă nu s-a deschis automat vizualizatorul de PDF, fișierul e la:
+        {$t("plan.previewOpened")}
         <span class="font-medium">{previewSuccess.path}</span>
       </p>
     {/if}
 
     {#if exportSuccess}
       <p class="mt-3 text-sm text-primary">
-        PDF salvat: <span class="font-medium">{exportSuccess.fileName}</span>
+        {$t("plan.pdfSaved")} <span class="font-medium">{exportSuccess.fileName}</span>
         <span class="text-muted-foreground">— {exportSuccess.path}</span>
       </p>
     {:else if exportError}
@@ -448,17 +449,17 @@
         onclick={openCreateDayVariant}
         class="rounded-full border border-dashed border-border px-4 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent"
       >
-        + Variantă de zi
+        {$t("plan.addDayVariant")}
       </button>
     </div>
 
     {#if activeDayVariant}
       <div class="mt-3 flex gap-3">
         <button onclick={() => openEditDayVariant(activeDayVariant!)} class="text-xs text-muted-foreground hover:underline">
-          Editează ziua
+          {$t("plan.editDay")}
         </button>
         <button onclick={() => openDeleteDayVariant(activeDayVariant!)} class="text-xs text-destructive hover:underline">
-          Șterge ziua
+          {$t("plan.deleteDay")}
         </button>
       </div>
 
@@ -474,13 +475,13 @@
               </div>
               <div class="flex flex-wrap gap-3">
                 <button onclick={() => openCreateFood(m)} class="text-xs font-medium text-primary hover:underline">
-                  + Aliment
+                  {$t("plan.addFood")}
                 </button>
                 <button onclick={() => openCreateSupplement(m)} class="text-xs font-medium text-primary hover:underline">
-                  + Supliment
+                  {$t("plan.addSupplement")}
                 </button>
-                <button onclick={() => openEditMeal(m)} class="text-xs text-muted-foreground hover:underline">Editează</button>
-                <button onclick={() => openDeleteMeal(m)} class="text-xs text-destructive hover:underline">Șterge</button>
+                <button onclick={() => openEditMeal(m)} class="text-xs text-muted-foreground hover:underline">{$t("common.edit")}</button>
+                <button onclick={() => openDeleteMeal(m)} class="text-xs text-destructive hover:underline">{$t("common.delete")}</button>
               </div>
             </div>
 
@@ -488,10 +489,10 @@
               <table class="mt-4 w-full text-sm">
                 <thead>
                   <tr class="text-left text-xs uppercase tracking-wide text-muted-foreground">
-                    <th class="pb-2 font-medium">Aliment</th>
-                    <th class="pb-2 font-medium">Cantitate</th>
-                    <th class="pb-2 font-medium">Alternativă</th>
-                    <th class="pb-2 font-medium">Cantitate</th>
+                    <th class="pb-2 font-medium">{$t("plan.tableFood")}</th>
+                    <th class="pb-2 font-medium">{$t("plan.tableQuantity")}</th>
+                    <th class="pb-2 font-medium">{$t("plan.tableAlternative")}</th>
+                    <th class="pb-2 font-medium">{$t("plan.tableQuantity")}</th>
                     <th class="pb-2 font-medium"></th>
                   </tr>
                 </thead>
@@ -500,21 +501,21 @@
                     <tr>
                       <td class="py-2.5 font-medium">{f.baseFood}</td>
                       <td class="py-2.5 text-muted-foreground">{f.baseQuantity} {f.baseUnit}</td>
-                      <td class="py-2.5">{f.alternativeFood ?? "—"}</td>
+                      <td class="py-2.5">{f.alternativeFood ?? $t("common.na")}</td>
                       <td class="py-2.5 text-muted-foreground">
-                        {f.alternativeFood ? `${f.alternativeQuantity} ${f.alternativeUnit}` : "—"}
+                        {f.alternativeFood ? `${f.alternativeQuantity} ${f.alternativeUnit}` : $t("common.na")}
                       </td>
                       <td class="py-2.5 text-right whitespace-nowrap">
                         <button
                           onclick={() => openEditFood(m, f)}
-                          aria-label="Editează aliment"
+                          aria-label={$t("plan.editFoodAria")}
                           class="rounded px-1.5 py-0.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                         >
                           ✎
                         </button>
                         <button
                           onclick={() => openDeleteFood(f)}
-                          aria-label="Șterge aliment"
+                          aria-label={$t("plan.deleteFoodAria")}
                           class="rounded px-1.5 py-0.5 text-muted-foreground transition-colors hover:bg-destructive hover:text-destructive-foreground"
                         >
                           🗑
@@ -525,25 +526,25 @@
                 </tbody>
               </table>
             {:else}
-              <p class="mt-3 text-sm text-muted-foreground">Niciun aliment adăugat.</p>
+              <p class="mt-3 text-sm text-muted-foreground">{$t("plan.noFoods")}</p>
             {/if}
 
             {#if m.supplements && m.supplements.length > 0}
               <div class="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
-                <span class="text-xs uppercase tracking-wide text-muted-foreground">Suplimente</span>
+                <span class="text-xs uppercase tracking-wide text-muted-foreground">{$t("plan.supplementsLabel")}</span>
                 {#each m.supplements as s (s.id)}
                   <span class="flex items-center gap-1 rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground">
                     {s.supplement} × {s.quantity}
                     <button
                       onclick={() => openEditSupplement(m, s)}
-                      aria-label="Editează supliment"
+                      aria-label={$t("plan.editSupplementAria")}
                       class="opacity-60 transition-opacity hover:opacity-100"
                     >
                       ✎
                     </button>
                     <button
                       onclick={() => openDeleteSupplement(s)}
-                      aria-label="Șterge supliment"
+                      aria-label={$t("plan.deleteSupplementAria")}
                       class="opacity-60 transition-opacity hover:opacity-100"
                     >
                       ✕
@@ -557,7 +558,7 @@
 
         {#if !activeDayVariant.meals || activeDayVariant.meals.length === 0}
           <div class="rounded-xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            Nicio masă adăugată pentru „{activeDayVariant.name}”.
+            {$t("plan.noMealsFor", { name: activeDayVariant.name })}
           </div>
         {/if}
 
@@ -565,17 +566,17 @@
           onclick={openCreateMeal}
           class="w-full rounded-xl border border-dashed border-border py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
         >
-          + Adaugă masă
+          {$t("plan.addMeal")}
         </button>
       </div>
     {:else}
       <div class="mt-8 rounded-xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-        Nicio variantă de zi încă. Adaugă prima variantă ca să începi.
+        {$t("plan.noDayVariants")}
       </div>
     {/if}
 
     <section class="mt-8 rounded-xl border border-border bg-card p-5">
-      <h3 class="font-display font-semibold">Footer plan</h3>
+      <h3 class="font-display font-semibold">{$t("plan.footerTitle")}</h3>
       <p class="mt-2 text-sm text-muted-foreground">{planFull.footer}</p>
     </section>
   </div>
@@ -583,7 +584,7 @@
 
 <Modal
   open={showDayVariantForm}
-  title={editingDayVariant ? "Editează variantă de zi" : "Variantă de zi nouă"}
+  title={editingDayVariant ? $t("plan.editDayVariant") : $t("plan.newDayVariant")}
   onClose={() => (showDayVariantForm = false)}
 >
   <DayVariantForm
@@ -596,16 +597,14 @@
 </Modal>
 <ConfirmDialog
   open={deletingDayVariant !== null}
-  message={deletingDayVariant
-    ? `Sigur vrei să ștergi „${deletingDayVariant.name}”? Toate mesele din această zi vor fi șterse.`
-    : ""}
+  message={deletingDayVariant ? $t("plan.deleteDayVariantConfirm", { name: deletingDayVariant.name }) : ""}
   submitting={deletingDayVariantBusy}
   error={deletingDayVariantError}
   onCancel={() => (deletingDayVariant = null)}
   onConfirm={confirmDeleteDayVariant}
 />
 
-<Modal open={showMealForm} title={editingMeal ? "Editează masă" : "Masă nouă"} onClose={() => (showMealForm = false)}>
+<Modal open={showMealForm} title={editingMeal ? $t("plan.editMeal") : $t("plan.newMeal")} onClose={() => (showMealForm = false)}>
   <MealForm
     initial={editingMeal}
     submitting={savingMeal}
@@ -616,14 +615,14 @@
 </Modal>
 <ConfirmDialog
   open={deletingMeal !== null}
-  message={deletingMeal ? `Sigur vrei să ștergi masa „${deletingMeal.name}”?` : ""}
+  message={deletingMeal ? $t("plan.deleteMealConfirm", { name: deletingMeal.name }) : ""}
   submitting={deletingMealBusy}
   error={deletingMealError}
   onCancel={() => (deletingMeal = null)}
   onConfirm={confirmDeleteMeal}
 />
 
-<Modal open={showFoodForm} title={editingFood ? "Editează aliment" : "Aliment nou"} onClose={() => (showFoodForm = false)}>
+<Modal open={showFoodForm} title={editingFood ? $t("plan.editFood") : $t("plan.newFood")} onClose={() => (showFoodForm = false)}>
   <FoodForm
     initial={editingFood}
     submitting={savingFood}
@@ -634,7 +633,7 @@
 </Modal>
 <ConfirmDialog
   open={deletingFood !== null}
-  message={deletingFood ? `Sigur vrei să ștergi „${deletingFood.baseFood}”?` : ""}
+  message={deletingFood ? $t("plan.deleteFoodConfirm", { name: deletingFood.baseFood }) : ""}
   submitting={deletingFoodBusy}
   error={deletingFoodError}
   onCancel={() => (deletingFood = null)}
@@ -643,7 +642,7 @@
 
 <Modal
   open={showSupplementForm}
-  title={editingSupplement ? "Editează supliment" : "Supliment nou"}
+  title={editingSupplement ? $t("plan.editSupplement") : $t("plan.newSupplement")}
   onClose={() => (showSupplementForm = false)}
 >
   <SupplementForm
@@ -656,7 +655,7 @@
 </Modal>
 <ConfirmDialog
   open={deletingSupplement !== null}
-  message={deletingSupplement ? `Sigur vrei să ștergi „${deletingSupplement.supplement}”?` : ""}
+  message={deletingSupplement ? $t("plan.deleteSupplementConfirm", { name: deletingSupplement.supplement }) : ""}
   submitting={deletingSupplementBusy}
   error={deletingSupplementError}
   onCancel={() => (deletingSupplement = null)}

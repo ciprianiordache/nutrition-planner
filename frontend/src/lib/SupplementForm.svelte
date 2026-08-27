@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { t } from "./i18n";
+
   export type SupplementFormData = {
     supplement: string;
     quantity: number;
@@ -32,19 +34,19 @@
 
 <form onsubmit={submit} class="space-y-4">
   <div>
-    <label class="mb-1 block text-xs font-medium text-muted-foreground" for="supp-name">Supliment</label>
+    <label class="mb-1 block text-xs font-medium text-muted-foreground" for="supp-name">{$t("supplementForm.name")}</label>
     <input
       id="supp-name"
       bind:value={supplement}
       required
-      placeholder="Ex: Multivitamine"
+      placeholder={$t("supplementForm.namePlaceholder")}
       class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
     />
   </div>
 
   <div class="grid grid-cols-2 gap-3">
     <div>
-      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="supp-qty">Cantitate</label>
+      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="supp-qty">{$t("common.quantity")}</label>
       <input
         id="supp-qty"
         type="number"
@@ -56,7 +58,7 @@
       />
     </div>
     <div>
-      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="supp-order">Ordine</label>
+      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="supp-order">{$t("common.order")}</label>
       <input
         id="supp-order"
         type="number"
@@ -78,14 +80,14 @@
       onclick={onCancel}
       class="rounded-md border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
     >
-      Anulează
+      {$t("common.cancel")}
     </button>
     <button
       type="submit"
       disabled={submitting}
       class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
     >
-      {submitting ? "Se salvează…" : initial ? "Salvează modificările" : "Adaugă supliment"}
+      {submitting ? $t("common.saving") : initial ? $t("common.saveChanges") : $t("supplementForm.add")}
     </button>
   </div>
 </form>
