@@ -211,20 +211,44 @@
     }
   }
 
-  let duplicatingPlanId = $state<string | null>(null);
+  // --- Duplică plan (posibil pentru alt client) -------------------------
+
+  let duplicatingPlan = $state<plan.Response | null>(null);
+  let duplicateTargetClientId = $state("");
+  let duplicateTitle = $state("");
+  let duplicatingBusy = $state(false);
   let duplicateError = $state<string | null>(null);
 
-  async function handleDuplicatePlan(p: plan.Response) {
-    if (!selectedClientId) return;
-    duplicatingPlanId = p.id;
+  function openDuplicatePlan(p: plan.Response) {
+    duplicatingPlan = p;
+    // Implicit: același client de la care pleci — cazul cel mai frecvent
+    // (duplici un plan pentru o lună nouă a aceluiași client) — dar
+    // selectul de mai jos permite alegerea oricărui alt client.
+    duplicateTargetClientId = selectedClientId ?? "";
+    duplicateTitle = `${p.title} ${$t("client.copySuffix")}`;
+    duplicateError = null;
+  }
+
+  async function confirmDuplicatePlan(e: SubmitEvent) {
+    e.preventDefault();
+    if (!duplicatingPlan || !duplicateTargetClientId || !duplicateTitle.trim()) return;
+    duplicatingBusy = true;
     duplicateError = null;
     try {
-      await planApi.duplicate({ sourcePlanId: p.id, title: `${p.title} ${$t("client.copySuffix")}` });
-      await loadPlansForClient(selectedClientId);
+      await planApi.duplicate({
+        sourcePlanId: duplicatingPlan.id,
+        targetClientId: duplicateTargetClientId,
+        title: duplicateTitle.trim(),
+      });
+      duplicatingPlan = null;
+      // Planurile vizibile momentan sunt ale clientului deschis - dacă am
+      // duplicat pentru alt client, lista lui nu e vizibilă acum oricum,
+      // deci nu are sens s-o reîncărcăm aici.
+      if (selectedClientId) await loadPlansForClient(selectedClientId);
     } catch (err) {
       duplicateError = errorMessage(err);
     } finally {
-      duplicatingPlanId = null;
+      duplicatingBusy = false;
     }
   }
 
@@ -337,9 +361,6 @@
               {:else if plans.length === 0}
                 <p class="mt-3 text-sm text-muted-foreground">{$t("client.noPlansYet")}</p>
               {:else}
-                {#if duplicateError}
-                  <p class="mt-3 text-sm text-destructive">{duplicateError}</p>
-                {/if}
                 <ul class="mt-3 space-y-2">
                   {#each plans as p (p.id)}
                     <li class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-card px-4 py-3">
@@ -357,8 +378,7 @@
                           {$t("client.open")}
                         </button>
                         <button
-                          onclick={() => handleDuplicatePlan(p)}
-                          disabled={duplicatingPlanId === p.id}
+                          onclick={() => openDuplicatePlan(p)}
                           aria-label={$t("client.duplicatePlanAria")}
                           class="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-60"
                         >
@@ -432,3 +452,56 @@
   onCancel={() => (deletingPlan = null)}
   onConfirm={confirmDeletePlan}
 />
+
+<Modal open={duplicatingPlan !== null} title={$t("client.duplicatePlanTitle")} onClose={() => (duplicatingPlan = null)}>
+  <form onsubmit={confirmDuplicatePlan} class="space-y-4">
+    <div>
+      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="duplicate-target-client">
+        {$t("client.duplicateTargetClient")}
+      </label>
+      <select
+        id="duplicate-target-client"
+        bind:value={duplicateTargetClientId}
+        required
+        class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
+      >
+        {#each clients as c (c.id)}
+          <option value={c.id}>{c.name}</option>
+        {/each}
+      </select>
+    </div>
+
+    <div>
+      <label class="mb-1 block text-xs font-medium text-muted-foreground" for="duplicate-title">
+        {$t("planForm.title")}
+      </label>
+      <input
+        id="duplicate-title"
+        bind:value={duplicateTitle}
+        required
+        class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring/40"
+      />
+    </div>
+
+    {#if duplicateError}
+      <p class="text-sm text-destructive">{duplicateError}</p>
+    {/if}
+
+    <div class="flex justify-end gap-2 pt-2">
+      <button
+        type="button"
+        onclick={() => (duplicatingPlan = null)}
+        class="rounded-md border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
+      >
+        {$t("common.cancel")}
+      </button>
+      <button
+        type="submit"
+        disabled={duplicatingBusy}
+        class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+      >
+        {duplicatingBusy ? $t("common.saving") : $t("client.duplicatePlanConfirm")}
+      </button>
+    </div>
+  </form>
+</Modal>

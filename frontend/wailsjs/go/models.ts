@@ -369,6 +369,7 @@ export namespace plan {
 	}
 	export class DuplicateRequest {
 	    sourcePlanId: string;
+	    targetClientId?: string;
 	    title: string;
 	
 	    static createFrom(source: any = {}) {
@@ -378,6 +379,7 @@ export namespace plan {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.sourcePlanId = source["sourcePlanId"];
+	        this.targetClientId = source["targetClientId"];
 	        this.title = source["title"];
 	    }
 	}

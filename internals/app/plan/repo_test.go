@@ -106,7 +106,7 @@ func TestRepo_Duplicate_CopiesFullTreeWithFreshIDs(t *testing.T) {
 	source, err := r.GetByIDFull(sourceID)
 	require.NoError(t, err)
 
-	newID, err := r.Duplicate(source, "Original (Copy)")
+	newID, err := r.Duplicate(source, clientID, "Original (Copy)")
 	require.NoError(t, err)
 	require.NotEqual(t, sourceID, newID, "the duplicate must be a distinct plan, not the same row")
 
@@ -141,6 +141,47 @@ func TestRepo_Duplicate_CopiesFullTreeWithFreshIDs(t *testing.T) {
 	require.Equal(t, dvID, original.DayVariants[0].ID)
 }
 
+func TestRepo_Duplicate_ToADifferentClient(t *testing.T) {
+	db := testutil.NewDatabase(t)
+	sourceClientID := testutil.SeedClient(t, db, &client.Client{Name: "Source Client", Weight: 80, Height: 180})
+	otherClientID := testutil.SeedClient(t, db, &client.Client{Name: "Other Client", Weight: 60, Height: 165})
+
+	foodRepo := food.NewRepo(db)
+	supRepo := supplement.NewRepo(db)
+	mealRepo := meal.NewRepo(db, foodRepo, supRepo)
+	dvRepo := day_variant.NewRepo(db, mealRepo)
+	r := plan.NewRepo(db, dvRepo)
+
+	sourceID, err := r.Create(&plan.Plan{ClientID: sourceClientID, Title: "Template plan"})
+	require.NoError(t, err)
+	_, err = dvRepo.Create(&day_variant.DayVariant{PlanID: sourceID, Name: "Day 1", Order: 1})
+	require.NoError(t, err)
+
+	source, err := r.GetByIDFull(sourceID)
+	require.NoError(t, err)
+
+	newID, err := r.Duplicate(source, otherClientID, "Template plan (Copy)")
+	require.NoError(t, err)
+
+	got, err := r.GetByIDFull(newID)
+	require.NoError(t, err)
+	require.Equal(t, otherClientID, got.ClientID, "the copy must belong to the target client, not the source's own client")
+	require.Len(t, got.DayVariants, 1)
+
+	// The source plan (and source client) must be completely unaffected.
+	original, err := r.GetByIDFull(sourceID)
+	require.NoError(t, err)
+	require.Equal(t, sourceClientID, original.ClientID)
+
+	sourceClientPlans, err := r.ListByClientID(sourceClientID)
+	require.NoError(t, err)
+	require.Len(t, sourceClientPlans, 1, "the source client should still have only their original plan")
+
+	otherClientPlans, err := r.ListByClientID(otherClientID)
+	require.NoError(t, err)
+	require.Len(t, otherClientPlans, 1, "the target client should now have the duplicated plan")
+}
+
 func TestRepo_Duplicate_WithNoDayVariants(t *testing.T) {
 	db := testutil.NewDatabase(t)
 	clientID := testutil.SeedClient(t, db, &client.Client{Name: "Client", Weight: 80, Height: 180})
@@ -157,7 +198,7 @@ func TestRepo_Duplicate_WithNoDayVariants(t *testing.T) {
 	source, err := r.GetByIDFull(sourceID)
 	require.NoError(t, err)
 
-	newID, err := r.Duplicate(source, "Empty plan (Copy)")
+	newID, err := r.Duplicate(source, clientID, "Empty plan (Copy)")
 	require.NoError(t, err)
 
 	got, err := r.GetByIDFull(newID)

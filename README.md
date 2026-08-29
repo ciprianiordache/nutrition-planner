@@ -1,69 +1,66 @@
 # NutriPlan
 
-O aplicație desktop pentru nutriționiști/antrenori personali — gestionează clienți, construiește planuri alimentare (zile → mese → alimente/suplimente) și exportă-le ca PDF-uri gata de trimis către client.
+A desktop app for nutritionists / personal trainers — manage clients, build meal plans (day variants → meals → foods/supplements), and export them as client-ready PDFs.
 
-Construită cu [Wails v2](https://wails.io) (Go + WebView nativ), frontend [Svelte 5](https://svelte.dev) + TypeScript, bază de date SQLite locală.
+Built with [Wails v2](https://wails.io) (Go + native WebView), [Svelte 5](https://svelte.dev) + TypeScript frontend, local SQLite database.
 
-<!--
-  TODO: adaugă aici 2-3 screenshot-uri reale din aplicație, de exemplu:
+  ![Client list](docs/screenshots/clients.png)
+  ![Plan editor](docs/screenshots/plan-editor.png)
+  ![Settings](docs/screenshots/settings.png)
 
-  ![Listă clienți](docs/screenshots/clients.png)
-  ![Editor plan](docs/screenshots/plan-editor.png)
-  ![Setări](docs/screenshots/settings.png)
--->
+## Features
 
-## Funcționalități
+- **Clients** — full CRUD, search and filter by objective (weight loss, muscle gain, maintenance, recomposition)
+- **Meal plans** — hierarchical structure: plan → day variants (training day/rest day/etc.) → meals → foods (with an optional alternative) and supplements
+- **Duplicate plan** — instantly copy an existing plan (with every day/meal/food) as a starting point for a new client or a new month, optionally targeting a *different* client than the source
+- **PDF export** — generates a professional PDF of the plan, with a fully customizable theme (colors, font) from Settings; each client gets their own export subfolder
+- **PDF preview** — renders the plan into a temporary file and opens it directly in the system's default PDF viewer, without touching the final export
+- **Settings**:
+  - profile (name + profession shown in the sidebar, asked for on first launch)
+  - PDF theme (10 customizable colors, with a reset-to-defaults option)
+  - export location (native folder-picker dialog)
+  - app appearance — light/dark/automatic theme (synced with the OS)
+  - language — Romanian/English, applied to both the UI and the labels baked into generated PDFs
+  - backup — archives the local database into a timestamped `.zip`
+- **Structured logging** — `log/slog`, with file rotation (JSON/text, console/file/both)
+- **Environment isolation** — `development`/`testing`/`production` automatically use separate databases and export folders, so test data never mixes with real client data
+- **Windows installer** — NSIS-based installer (via `wails build -nsis`), bundling a working default config so a fresh install works out of the box
 
-- **Clienți** — CRUD complet, căutare și filtrare după obiectiv (slăbire, masă musculară, menținere, recompoziție)
-- **Planuri alimentare** — structură ierarhică: plan → variante de zi (zi de antrenament/repaus/etc.) → mese → alimente (cu alternativă opțională) și suplimente
-- **Duplică plan** — copiază instant un plan existent (cu tot cu zile/mese/alimente) ca punct de plecare pentru un client nou sau o lună nouă
-- **Export PDF** — generează un PDF profesional al planului, cu temă complet personalizabilă (culori, font) din Setări; fiecare client primește propriul subfolder de export
-- **Previzualizare PDF** — randează planul într-un fișier temporar și îl deschide direct în vizualizatorul de PDF implicit al sistemului, fără să atingă exportul final
-- **Setări**:
-  - profil (nume + profesie afișate în bara laterală, cerute la prima pornire)
-  - temă PDF (10 culori personalizabile, cu resetare la valorile implicite)
-  - locul de export (dialog nativ de alegere folder)
-  - aspect aplicație — temă deschisă/întunecată/automat (sincronizată cu sistemul)
-  - limbă — română/engleză, aplicată atât interfeței cât și etichetelor din PDF-ul generat
-  - backup — arhivează baza de date locală într-un `.zip` cu timestamp
-- **Logging structurat** — `log/slog`, cu rotație de fișiere (JSON/text, consolă/fișier/ambele)
-- **Izolare pe mediu** — `development`/`testing`/`production` folosesc automat baze de date și foldere de export separate, ca să nu se amestece date de test cu date reale de client
+## Tech stack
 
-## Stack tehnic
-
-| Strat | Tehnologie |
+| Layer | Technology |
 |---|---|
 | Backend | Go 1.26, [Wails v2](https://wails.io) |
-| Bază de date | SQLite (driver pur Go, [`modernc.org/sqlite`](https://pkg.go.dev/modernc.org/sqlite), fără CGO) |
-| ORM ușor | [`crud-depot`](https://github.com/ciprianiordache/crud-depot) + [`schema-builder`](https://github.com/ciprianiordache/schema-builder) |
-| Generare PDF | [`maroto/v2`](https://github.com/johnfercher/maroto) |
+| Database | SQLite (pure-Go driver, [`modernc.org/sqlite`](https://pkg.go.dev/modernc.org/sqlite), no CGO) |
+| Lightweight ORM | [`crud-depot`](https://github.com/ciprianiordache/crud-depot) + [`schema-builder`](https://github.com/ciprianiordache/schema-builder) |
+| PDF generation | [`maroto/v2`](https://github.com/johnfercher/maroto) |
 | Frontend | Svelte 5 (runes) + TypeScript, Vite, Tailwind CSS v4 |
-| Logging | `log/slog` + [`lumberjack`](https://github.com/natefinch/lumberjack) (rotație) |
+| Logging | `log/slog` + [`lumberjack`](https://github.com/natefinch/lumberjack) (rotation) |
 
-## Arhitectură
+## Architecture
 
-Backend-ul urmează consecvent un pattern pe straturi, per domeniu (`client`, `plan`, `day_variant`, `meal`, `food`, `supplement`, `pdf_export`, `settings`):
+The backend consistently follows a layered pattern, one package per domain (`client`, `plan`, `day_variant`, `meal`, `food`, `supplement`, `pdf_export`, `settings`):
 
 ```
-internals/app/<domeniu>/
-  model.go     — struct-uri de domeniu + Request/Response DTO-uri
-  repo.go      — acces la bază de date (crud-depot)
-  service.go   — logică de business, validare, logging
-  handler.go   — expus către frontend prin Wails binding
+internals/app/<domain>/
+  model.go     — domain structs + Request/Response DTOs
+  repo.go      — database access (crud-depot)
+  service.go   — business logic, validation, logging
+  handler.go   — exposed to the frontend via a Wails binding
   errors.go
   *_test.go
 ```
 
-Pachete transversale:
-- `internals/database` — conexiune SQLite, rezolvare cale fișier
-- `internals/generator` — toolkit generic de generare PDF (temă, layout), independent de domeniu
-- `internals/logger` — construcție logger structurat din config
-- `internals/osutil` — deschidere fișiere/foldere în aplicația implicită a sistemului de operare
-- `config` — încărcare `config.yaml`/`.env`, izolare pe mediu
+Cross-cutting packages:
+- `internals/database` — SQLite connection, file path resolution
+- `internals/generator` — generic PDF generation toolkit (theme, layout), domain-independent
+- `internals/logger` — builds the structured logger from config
+- `internals/osutil` — opens files/folders in the OS's default application
+- `config` — loads `config.yaml`/`.env`, environment isolation
 
-## Rulare locală
+## Running locally
 
-### Cerințe
+### Requirements
 
 - [Go](https://go.dev) 1.26+
 - [Node.js](https://nodejs.org) 22+
@@ -73,48 +70,58 @@ Pachete transversale:
 go install github.com/wailsapp/wails/v2/cmd/wails@latest
 ```
 
-### Configurare
+### Configuration
 
-Copiază/editează `config.yaml` din rădăcina proiectului. La prima rulare, dacă `config.yaml`/`.env` nu există, se generează automat cu valori implicite.
+Copy/edit `config.yaml` in the project root. On first run, if `config.yaml`/`.env` don't exist, they're generated automatically with default values.
 
-Câmpuri relevante:
+Relevant fields:
 ```yaml
 app:
-    environment: development   # development / testing / production — izolează DB și exportul per mediu
+    environment: development   # development / testing / production — isolates the DB and export folder per environment
 database:
     driver: sqlite
     name: nutrition-planner
 generator:
-    # temă implicită PDF — suprascrisă de Setări din aplicație, dacă sunt setate
+    # default PDF theme — overridden by the app's Settings screen, if set
 logger:
     output: both                # stdout / file / both
 ```
 
-### Dezvoltare
+### Development
 
 ```bash
 wails dev
 ```
 
-Pornește un server Vite cu hot-reload pentru frontend, plus aplicația Wails. Bindings-urile TypeScript pentru metodele Go expuse (`frontend/wailsjs/go/...`) se regenerează automat la fiecare pornire.
+Starts a Vite dev server with hot-reload for the frontend, plus the Wails app. The TypeScript bindings for the exposed Go methods (`frontend/wailsjs/go/...`) are regenerated automatically on every start.
 
-### Build de producție
+### Production build
 
 ```bash
 wails build
 ```
 
-Rezultă executabilul în `build/bin/`. **Important:** `config.yaml`/`.env` nu sunt copiate automat lângă executabil — vezi `build.ps1` din rădăcina proiectului pentru un script care rulează `wails build` și copiază configul automat.
+Produces the executable in `build/bin/`. **Important:** `config.yaml`/`.env` are not copied next to the executable automatically — see `build.ps1` in the project root for a script that runs `wails build` and copies the config for you.
 
-### Popularea cu date de test
+### Windows installer
+
+```bash
+wails build -nsis
+```
+
+Requires [NSIS](https://nsis.sourceforge.io/Download) (`makensis` on `PATH`). Produces `build/bin/nutrition-planner-amd64-installer.exe`, which bundles `config.yaml`/`.env` directly so a fresh install has a working configuration from the start. `build.ps1 -Installer` runs this and copies the config for local testing in one step.
+
+Before building a real, distributable installer, double-check `config.yaml`'s `app.debug`/`app.environment` are set to `false`/`production` — the repo's defaults are meant for local development (they auto-open DevTools and use verbose logging).
+
+### Seeding test data
 
 ```bash
 go run ./cmd/seed
 ```
 
-Populează baza de date curentă (respectând `app.environment`) cu clienți, planuri, mese și alimente de test.
+Populates the current database (respecting `app.environment`) with sample clients, plans, meals, and foods.
 
-## Testare
+## Testing
 
 **Backend:**
 ```bash
@@ -127,28 +134,33 @@ go test ./...
 ```bash
 cd frontend
 npm ci
-npm run check   # svelte-check (verificare de tipuri)
-npm run build   # build de producție Vite
+npm run check   # svelte-check (type checking)
+npm run build   # production Vite build
 ```
 
-## Structura proiectului
+## Project structure
 
 ```
 ├── app.go                    # wiring: config → DB → repo → service → handler
-├── main.go                   # entrypoint Wails
-├── config/                   # încărcare config.yaml/.env
+├── main.go                   # Wails entrypoint
+├── config/                   # config.yaml/.env loading
 ├── internals/
-│   ├── app/<domeniu>/        # câte un pachet per domeniu (vezi Arhitectură)
+│   ├── app/<domain>/         # one package per domain (see Architecture)
 │   ├── database/
-│   ├── generator/            # toolkit generic de PDF
+│   ├── generator/            # generic PDF toolkit
 │   ├── logger/
 │   ├── osutil/
-│   └── testutil/             # bază de date SQLite in-memory pentru teste
-├── cmd/seed/                 # populare cu date de test
+│   └── testutil/             # in-memory SQLite database for tests
+├── cmd/seed/                 # test data seeding
 ├── frontend/
 │   ├── src/
-│   │   ├── lib/               # componente reutilizabile + i18n, api, stores
-│   │   └── views/              # ecranele principale (Clienți, Plan, Setări)
-│   └── wailsjs/                # bindings generate automat de Wails (comise în git)
-└── build.ps1                  # wails build + copiere config.yaml/.env
+│   │   ├── lib/               # reusable components + i18n, api, stores
+│   │   └── views/              # main screens (Clients, Plan, Settings)
+│   └── wailsjs/                # Wails-generated bindings (committed to git)
+├── build/windows/installer/    # NSIS installer script
+└── build.ps1                   # wails build [-Installer] + config.yaml/.env copy
 ```
+
+## License
+
+[MIT](LICENSE.md)

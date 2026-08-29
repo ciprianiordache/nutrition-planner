@@ -111,9 +111,18 @@ func (s *service) Duplicate(req DuplicateRequest) (Response, error) {
 		return Response{}, err
 	}
 
-	newID, err := s.repo.Duplicate(source, req.Title)
+	// An empty TargetClientID means "duplicate for the same client" - the
+	// original, simpler behavior - a non-empty one lets the copy land on
+	// an entirely different client instead (e.g. reusing a "starter weight
+	// loss plan" template across multiple people).
+	targetClientID := req.TargetClientID
+	if targetClientID == "" {
+		targetClientID = source.ClientID
+	}
+
+	newID, err := s.repo.Duplicate(source, targetClientID, req.Title)
 	if err != nil {
-		s.log.Error("failed to duplicate plan", "source_plan_id", req.SourcePlanID, "error", err)
+		s.log.Error("failed to duplicate plan", "source_plan_id", req.SourcePlanID, "target_client_id", targetClientID, "error", err)
 		return Response{}, fmt.Errorf("duplicate plan: %w", err)
 	}
 
@@ -122,6 +131,6 @@ func (s *service) Duplicate(req DuplicateRequest) (Response, error) {
 		return Response{}, err
 	}
 
-	s.log.Info("plan duplicated", "source_plan_id", req.SourcePlanID, "new_plan_id", newID, "title", req.Title)
+	s.log.Info("plan duplicated", "source_plan_id", req.SourcePlanID, "new_plan_id", newID, "target_client_id", targetClientID, "title", req.Title)
 	return toResponse(*created), nil
 }

@@ -17,10 +17,11 @@ type Repo interface {
 	Delete(id string) error
 	// Duplicate creates a full copy of source (title, general
 	// recommendations, footer, every day variant/meal/food/supplement it
-	// has) for the same client, returning the new plan's ID. source is
-	// expected to come from GetByIDFull (its DayVariants must already be
-	// populated) - Duplicate doesn't re-query them.
-	Duplicate(source *Plan, newTitle string) (string, error)
+	// has) for targetClientID (which may be a *different* client than
+	// source.ClientID), returning the new plan's ID. source is expected to
+	// come from GetByIDFull (its DayVariants must already be populated) -
+	// Duplicate doesn't re-query them.
+	Duplicate(source *Plan, targetClientID, newTitle string) (string, error)
 }
 
 type repo struct {
@@ -115,15 +116,16 @@ func (r *repo) Delete(id string) error {
 	return r.depot.Delete(&Plan{}, "id", id)
 }
 
-// Duplicate creates a new plan for source.ClientID titled newTitle, with
-// the same general recommendations/footer, then duplicates every one of
-// source's day variants onto it (each recursively duplicating its own
-// meals, and each meal its own foods/supplements - see
-// day_variant.Repo.Duplicate and meal.Repo.Duplicate). source.DayVariants
-// must already be populated (see GetByIDFull).
-func (r *repo) Duplicate(source *Plan, newTitle string) (string, error) {
+// Duplicate creates a new plan for targetClientID (which may be a
+// *different* client than source.ClientID) titled newTitle, with the same
+// general recommendations/footer, then duplicates every one of source's
+// day variants onto it (each recursively duplicating its own meals, and
+// each meal its own foods/supplements - see day_variant.Repo.Duplicate and
+// meal.Repo.Duplicate). source.DayVariants must already be populated (see
+// GetByIDFull).
+func (r *repo) Duplicate(source *Plan, targetClientID, newTitle string) (string, error) {
 	newPlan := &Plan{
-		ClientID:               source.ClientID,
+		ClientID:               targetClientID,
 		Title:                  newTitle,
 		GeneralRecommendations: source.GeneralRecommendations,
 		Footer:                 source.Footer,

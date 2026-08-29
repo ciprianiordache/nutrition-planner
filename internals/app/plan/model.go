@@ -36,9 +36,12 @@ type UpdateRequest struct {
 // DuplicateRequest — input for Service.Duplicate. Title is supplied by the
 // frontend (rather than the backend inventing a suffix like "(Copy)")
 // specifically so it matches whatever language the UI is currently in.
+// TargetClientID lets the copy land on a *different* client than the
+// source plan's own - leave empty to duplicate for the same client.
 type DuplicateRequest struct {
-	SourcePlanID string `json:"sourcePlanId"`
-	Title        string `json:"title"`
+	SourcePlanID   string `json:"sourcePlanId"`
+	TargetClientID string `json:"targetClientId,omitempty"`
+	Title          string `json:"title"`
 }
 
 // Response — the data sent to the frontend pentru Create/List/Update.
