@@ -7,6 +7,7 @@ import (
 	"log"
 	"log/slog"
 	"os"
+	"path/filepath"
 
 	"nutrition-planner/config"
 	"nutrition-planner/internals/app/client"
@@ -58,6 +59,34 @@ func NewApp() *App {
 	cfg, err := config.Load("config.yaml", ".env")
 	if err != nil {
 		log.Fatalf("❌ Unable to load config: %v", err)
+	}
+
+	// Empty DataDirectory/TempDirectory/Logger.FilePath fall back to a
+	// proper per-user app-data location (e.g. %AppData%\NutriPlan on
+	// Windows) instead of staying empty or resolving relative to whatever
+	// directory the app happens to be launched from. This matters
+	// specifically for an installed copy: the installer's own config.yaml
+	// (build/windows/installer/project.nsi) ships with these left empty on
+	// purpose, since a machine-wide install lands in "C:\Program Files\...",
+	// which (a) a standard user may not be able to write to at runtime and
+	// (b) gets deleted entirely on uninstall - neither of which should ever
+	// happen to someone's client database. See config.DefaultAppDataDir's
+	// own docs for the full reasoning.
+	if cfg.App.DataDirectory == "" || cfg.App.TempDirectory == "" ||
+		(cfg.Logger.FilePath == "" && (cfg.Logger.Output == "file" || cfg.Logger.Output == "both")) {
+		appDataDir, err := config.DefaultAppDataDir()
+		if err != nil {
+			log.Fatalf("❌ Unable to resolve app data directory: %v", err)
+		}
+		if cfg.App.DataDirectory == "" {
+			cfg.App.DataDirectory = filepath.Join(appDataDir, "data")
+		}
+		if cfg.App.TempDirectory == "" {
+			cfg.App.TempDirectory = filepath.Join(appDataDir, "temp")
+		}
+		if cfg.Logger.FilePath == "" {
+			cfg.Logger.FilePath = filepath.Join(appDataDir, "logs")
+		}
 	}
 
 	// App.Debug forces verbose logging regardless of what logger.level

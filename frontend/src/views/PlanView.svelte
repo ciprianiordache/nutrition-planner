@@ -400,53 +400,55 @@
   </div>
 {:else if planFull}
   <div class="mx-auto max-w-5xl px-6 py-10">
-    <button onclick={backToClients} class="text-xs text-muted-foreground hover:underline">{$t("plan.backToClients")}</button>
+    <div class="sticky top-0 z-10 bg-background pb-4">
+      <button onclick={backToClients} class="text-xs text-muted-foreground hover:underline">{$t("plan.backToClients")}</button>
 
-    <header class="mt-1 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
-      <div>
-        <h1 class="font-display text-3xl font-semibold tracking-tight">{planFull.title}</h1>
-        {#if planFull.generalRecommendations}
-          <p class="mt-1 text-sm text-muted-foreground">{planFull.generalRecommendations}</p>
-        {/if}
-      </div>
-      <div class="flex gap-2">
-        <button
-          onclick={handlePreviewPDF}
-          disabled={previewing}
-          class="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-60"
-        >
-          {previewing ? $t("plan.previewing") : $t("plan.preview")}
-        </button>
-        <button
-          onclick={handleExportPDF}
-          disabled={exporting}
-          class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
-        >
-          {exporting ? $t("plan.exporting") : $t("plan.exportPdf")}
-        </button>
-      </div>
-    </header>
+      <header class="mt-1 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
+        <div>
+          <h1 class="font-display text-3xl font-semibold tracking-tight">{planFull.title}</h1>
+          {#if planFull.generalRecommendations}
+            <p class="mt-1 text-sm text-muted-foreground">{planFull.generalRecommendations}</p>
+          {/if}
+        </div>
+        <div class="flex gap-2">
+          <button
+            onclick={handlePreviewPDF}
+            disabled={previewing}
+            class="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-60"
+          >
+            {previewing ? $t("plan.previewing") : $t("plan.preview")}
+          </button>
+          <button
+            onclick={handleExportPDF}
+            disabled={exporting}
+            class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+          >
+            {exporting ? $t("plan.exporting") : $t("plan.exportPdf")}
+          </button>
+        </div>
+      </header>
 
-    {#if previewError}
-      <p class="mt-3 text-sm text-destructive">{previewError}</p>
-    {:else if previewSuccess}
-      <p class="mt-3 text-sm text-muted-foreground">
-        {$t("plan.previewOpened")}
-        <span class="font-medium">{previewSuccess.path}</span>
-      </p>
-    {/if}
+      {#if previewError}
+        <p class="mt-3 text-sm text-destructive">{previewError}</p>
+      {:else if previewSuccess}
+        <p class="mt-3 text-sm text-muted-foreground">
+          {$t("plan.previewOpened")}
+          <span class="font-medium">{previewSuccess.path}</span>
+        </p>
+      {/if}
 
-    {#if exportSuccess}
-      <p class="mt-3 text-sm text-primary">
-        {$t("plan.pdfSaved")} <span class="font-medium">{exportSuccess.fileName}</span>
-        <span class="text-muted-foreground">— {exportSuccess.path}</span>
-        <button onclick={handleOpenFolder} class="ml-2 font-medium text-primary hover:underline">
-          {$t("plan.openFolder")}
-        </button>
-      </p>
-    {:else if exportError}
-      <p class="mt-3 text-sm text-destructive">{exportError}</p>
-    {/if}
+      {#if exportSuccess}
+        <p class="mt-3 text-sm text-primary">
+          {$t("plan.pdfSaved")} <span class="font-medium">{exportSuccess.fileName}</span>
+          <span class="text-muted-foreground">— {exportSuccess.path}</span>
+          <button onclick={handleOpenFolder} class="ml-2 font-medium text-primary hover:underline">
+            {$t("plan.openFolder")}
+          </button>
+        </p>
+      {:else if exportError}
+        <p class="mt-3 text-sm text-destructive">{exportError}</p>
+      {/if}
+    </div>
 
     <div class="mt-6 flex flex-wrap items-center gap-2">
       {#each planFull.dayVariants ?? [] as dv (dv.id)}

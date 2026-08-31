@@ -133,4 +133,33 @@
     height: 100vh;
     overscroll-behavior: none;
   }
+
+  /* Scrollbar subțire, discret - vizibil doar cât să indice că se poate
+     scrolla, fără bara groasă implicită a Chrome/WebView2. Firefox nu
+     suportă ::-webkit-scrollbar, de-aia setăm și scrollbar-width/-color. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-muted-foreground);
+    background-clip: padding-box;
+  }
 }

@@ -259,33 +259,35 @@
 </script>
 
 <div class="mx-auto max-w-5xl px-6 py-10">
-  <header class="flex flex-wrap items-end justify-between gap-4">
-    <div>
-      <h1 class="font-display text-3xl font-semibold tracking-tight">{$t("client.title")}</h1>
-      <p class="mt-1 text-sm text-muted-foreground">
-        {$t("client.subtitle", { count: filteredClients.length })}
-      </p>
-    </div>
-    <button
-      onclick={openCreateClient}
-      class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-    >
-      {$t("client.new")}
-    </button>
-  </header>
+  <div class="sticky top-0 z-10 bg-background pb-4">
+    <header class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h1 class="font-display text-3xl font-semibold tracking-tight">{$t("client.title")}</h1>
+        <p class="mt-1 text-sm text-muted-foreground">
+          {$t("client.subtitle", { count: filteredClients.length })}
+        </p>
+      </div>
+      <button
+        onclick={openCreateClient}
+        class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+      >
+        {$t("client.new")}
+      </button>
+    </header>
 
-   <div class="mt-8 flex gap-3">
-    <input
-      bind:value={searchQuery}
-      placeholder={$t("client.searchPlaceholder")}
-      class="w-full max-w-sm rounded-md border border-input bg-card px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/40"
-    />
-    <select bind:value={targetFilter} class="rounded-md border border-input bg-card px-3 py-2 text-sm">
-      <option value="">{$t("client.allTargets")}</option>
-      {#each TARGET_KEYS as key (key)}
-        <option value={key}>{$t(`target.${key}`)}</option>
-      {/each}
-    </select>
+    <div class="mt-8 flex gap-3">
+      <input
+        bind:value={searchQuery}
+        placeholder={$t("client.searchPlaceholder")}
+        class="w-full max-w-sm rounded-md border border-input bg-card px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/40"
+      />
+      <select bind:value={targetFilter} class="rounded-md border border-input bg-card px-3 py-2 text-sm">
+        <option value="">{$t("client.allTargets")}</option>
+        {#each TARGET_KEYS as key (key)}
+          <option value={key}>{$t(`target.${key}`)}</option>
+        {/each}
+      </select>
+    </div>
   </div>
 
   {#if loadingClients}

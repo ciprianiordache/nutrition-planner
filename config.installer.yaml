@@ -1,0 +1,57 @@
+# config.installer.yaml — bundled into the Windows installer as config.yaml
+# (see build/windows/installer/project.nsi), NOT the file used by `wails
+# dev`/local testing (that's the plain config.yaml in the project root,
+# which keeps convenient relative ./data, ./temp, ./logs paths for local
+# development).
+#
+# data_directory / temp_directory / logger.file_path are left empty on
+# purpose: app.go auto-resolves an empty value to a proper per-user
+# location (%AppData%\NutriPlan on Windows) instead of a path relative to
+# wherever the installed .exe happens to run from - see
+# config.DefaultAppDataDir's docs for why this matters for an installed
+# copy specifically (write permissions in Program Files, and NOT having
+# the uninstaller wipe out the user's own database along with the program).
+app:
+    data_directory: ""
+    debug: false
+    environment: production
+    name: nutrition-planner
+    temp_directory: ""
+    version: v0.1.0
+database:
+    conn_max_idle_time: 30m0s
+    conn_max_lifetime: 1h0m0s
+    driver: sqlite
+    max_idle_conns: 10
+    max_open_conns: 20
+    name: nutrition-planner
+    sslmode: disable
+    timezone: UTC
+export: {}
+generator:
+    color_card_background: FFFFFF
+    color_card_border: E7E4D9
+    color_divider: E5E2D8
+    color_muted: 6B6B66
+    color_on_primary: FFFFFF
+    color_page_background: F7F5EF
+    color_primary: 2F5233
+    color_primary_light: E3EDE1
+    color_table_header: 8A8A82
+    color_text: 2B2B28
+    font_family: NotoSans
+    margin_bottom: 6
+    margin_left: 5
+    margin_right: 5
+    margin_top: 6
+    output_directory: ./output
+    page_size: A4
+logger:
+    compress: true
+    file_path: ""
+    format: json
+    level: info
+    max_age: 30
+    max_backups: 10
+    max_size: 50
+    output: both
