@@ -1,3 +1,4 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 # NutriPlan
 
 A desktop app for nutritionists / personal trainers — manage clients, build meal plans (day variants → meals → foods/supplements), and export them as client-ready PDFs.
@@ -5,8 +6,12 @@ A desktop app for nutritionists / personal trainers — manage clients, build me
 Built with [Wails v2](https://wails.io) (Go + native WebView), [Svelte 5](https://svelte.dev) + TypeScript frontend, local SQLite database.
 
   ![Client list](docs/screenshots/clients.png)
+
   ![Plan editor](docs/screenshots/plan-editor.png)
+
   ![Settings](docs/screenshots/settings.png)
+
+  ![PDF](docs/screenshots/exported-pdf.png)
 
 ## Features
 

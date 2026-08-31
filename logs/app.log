@@ -20,3 +20,19 @@
 {"time":"2026-08-31T10:39:22.2392477+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
 {"time":"2026-08-31T10:39:31.3104607+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
 {"time":"2026-08-31T10:39:31.3553629+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-31T10:52:52.3525611+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-31T10:53:12.2181679+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-31T10:53:18.576804+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-31T10:53:18.6146442+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-31T10:55:38.2840278+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-31T10:57:08.0417405+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-31T10:57:27.8640572+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-31T10:57:34.031755+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-31T10:57:34.067701+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-31T10:58:15.2286941+03:00","level":"INFO","msg":"settings updated","environment":"development"}
+{"time":"2026-08-31T11:02:04.954954+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-31T11:02:24.8362497+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-31T11:02:31.0635959+03:00","level":"INFO","msg":"export configured","environment":"development","base_directory":"C:\\Users\\ciipr\\Desktop\\NutriPlan Exports (development)"}
+{"time":"2026-08-31T11:02:31.1013255+03:00","level":"INFO","msg":"[WebView2] Environment created successfully","environment":"development"}
+{"time":"2026-08-31T11:02:40.0717276+03:00","level":"INFO","msg":"plan preview generated","environment":"development","plan_id":"29cedfc6-7a67-46ed-afde-d1efe6bf6507","client":"Andreea Popescu","path":"temp\\Meal Plan — February_2026-08-31.pdf"}
+{"time":"2026-08-31T11:03:13.9392317+03:00","level":"INFO","msg":"plan preview generated","environment":"development","plan_id":"29cedfc6-7a67-46ed-afde-d1efe6bf6507","client":"Andreea Popescu","path":"temp\\Meal Plan — February_2026-08-31.pdf"}
