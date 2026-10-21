@@ -11,8 +11,9 @@ import (
 	"nutrition-planner/internals/app/client"
 	"nutrition-planner/internals/app/plan"
 	"nutrition-planner/internals/app/settings"
-	"nutrition-planner/internals/generator"
 	"nutrition-planner/internals/osutil"
+
+	"github.com/ciprianiordache/pdfgen"
 )
 
 // Service exports a plan (identified by ID) to a PDF file on disk, and can
@@ -39,9 +40,8 @@ type service struct {
 	repo        Repo
 	// genCfg is the base pdfgen configuration (theme, margins, page size)
 	// loaded once from config.yaml - it's the fallback for any color the
-	// user hasn't overridden from the Settings screen. OutputDirectory is
-	// overridden per render with a scratch directory (tempDir) or the
-	// client's export directory, depending on the operation.
+	// user hasn't overridden from the Settings screen. Every render is
+	// saved under tempDir first (its OutputDirectory is not used here).
 	genCfg config.GeneratorConfig
 	// tempDir is where every PDF gets rendered first (config.AppConfig.
 	// TempDirectory) - both the export staging file and preview files
@@ -136,19 +136,18 @@ func (s *service) renderPDF(planID string) (stagingPath, fileName, clientName st
 	}
 
 	cfg := applySettingsTheme(s.genCfg, userSettings)
-	cfg.OutputDirectory = s.tempDir
 
-	gen, err := generator.NewGenerator(cfg)
+	doc, err := pdfgen.New(PDFConfig(cfg))
 	if err != nil {
 		s.log.Error("pdf render failed: could not initialize pdf generator", "plan_id", planID, "error", err)
 		return "", "", "", settings.Response{}, fmt.Errorf("init pdf generator: %w", err)
 	}
 
-	renderPlan(gen, p, c, userSettings.Language)
+	renderPlan(doc, p, c, userSettings.Language)
 
 	fileName = buildFileName(p.Title)
-	stagingPath, err = gen.Save(fileName)
-	if err != nil {
+	stagingPath = filepath.Join(s.tempDir, fileName)
+	if err = doc.Save(stagingPath); err != nil {
 		s.log.Error("pdf render failed: could not save pdf", "plan_id", planID, "file_name", fileName, "error", err)
 		return "", "", "", settings.Response{}, fmt.Errorf("save pdf: %w", err)
 	}

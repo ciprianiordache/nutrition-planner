@@ -1,4 +1,4 @@
-// cmd/demo exercisează pachetul internals/generator direct (fără DB, fără
+// cmd/demo exercisează librăria pdfgen direct (fără DB, fără
 // export.Service) cu date shape-uite ca ecranele reale ale aplicației - util
 // ca smoke test rapid când modifici tema/layout-ul PDF-ului.
 //
@@ -18,7 +18,9 @@ import (
 	"runtime"
 
 	"nutrition-planner/config"
-	"nutrition-planner/internals/generator"
+	"nutrition-planner/internals/app/pdf_export"
+
+	"github.com/ciprianiordache/pdfgen"
 )
 
 // Food/Meal/DayVariant are minimal stand-ins for the domain model NutriPlan
@@ -64,7 +66,7 @@ func main() {
 		panic(err)
 	}
 
-	// gen.Save() scrie fișierul cu os.WriteFile, care NU creează directoare
+	// doc.Save() scrie fișierul cu os.WriteFile, care NU creează directoare
 	// lipsă - spre deosebire de fluxul real din aplicație (export.Repo),
 	// care apelează os.MkdirAll pentru folderul per-client. Acest demo
 	// ocolește export.Repo, deci ne asigurăm noi că directorul există.
@@ -78,14 +80,14 @@ func main() {
 		log.Fatalf("create output directory %q: %v", absOutputDir, err)
 	}
 
-	gen, err := generator.NewGenerator(cfg.Generator)
+	doc, err := pdfgen.New(pdf_export.PDFConfig(cfg.Generator))
 	if err != nil {
-		log.Fatalf("new generator: %v", err)
+		log.Fatalf("pdfgen: %v", err)
 	}
 
-	gen.ClientHeader("Andreea Popescu", "Slăbire")
-	gen.Title("Plan alimentar — August")
-	gen.Spacer(3)
+	doc.Eyebrow("Andreea Popescu", "Slăbire")
+	doc.Title("Plan alimentar — August")
+	doc.Spacer(3)
 
 	dayVariants := []DayVariant{
 		{
@@ -148,42 +150,42 @@ func main() {
 	for _, dv := range dayVariants {
 		if len(dv.Meals) > 0 {
 			first := dv.Meals[0]
-			gen.EnsureFits(generator.DayBannerRowHeight + generator.BlockHeight(first.Note != "", len(first.Foods), len(first.Supplements)))
+			doc.EnsureFits(pdfgen.BannerHeight + pdfgen.BlockHeight(first.Note != "", len(first.Foods), len(first.Supplements) > 0))
 		} else {
-			gen.EnsureFits(generator.DayBannerRowHeight)
+			doc.EnsureFits(pdfgen.BannerHeight)
 		}
-		gen.DayBanner(dv.Label)
-		gen.Spacer(2)
+		doc.Banner(dv.Label)
+		doc.Spacer(2)
 
 		for i, meal := range dv.Meals {
-			gen.EnsureFits(generator.BlockHeight(meal.Note != "", len(meal.Foods), len(meal.Supplements)))
+			doc.EnsureFits(pdfgen.BlockHeight(meal.Note != "", len(meal.Foods), len(meal.Supplements) > 0))
 
-			gen.MealHeader(meal.Name, meal.Note)
+			doc.Heading(meal.Name, meal.Note)
 
 			rows := make([][]string, 0, len(meal.Foods))
 			for _, f := range meal.Foods {
 				rows = append(rows, []string{f.BaseName, f.BaseQty, f.AltName, f.AltQty})
 			}
 
-			gen.Table(generator.TableData{
+			doc.Table(pdfgen.TableData{
 				Headers:   []string{"Aliment", "Cantitate", "Alternativă", "Cantitate"},
 				Rows:      rows,
 				ColWidths: []int{4, 2, 4, 2},
 			})
 
-			gen.SupplementsLine("Suplimente", meal.Supplements)
+			doc.Badges("Suplimente", meal.Supplements)
 
 			if i < len(dv.Meals)-1 {
-				gen.Spacer(3)
-				gen.Divider()
-				gen.Spacer(3)
+				doc.Spacer(3)
+				doc.Divider()
+				doc.Spacer(3)
 			}
 		}
-		gen.Spacer(6)
+		doc.Spacer(6)
 	}
 
-	outPath, err := gen.Save("plan_alimentar_demo.pdf")
-	if err != nil {
+	outPath := filepath.Join(absOutputDir, "plan_alimentar_demo.pdf")
+	if err := doc.Save(outPath); err != nil {
 		log.Fatalf("save: %v", err)
 	}
 	fmt.Println("PDF generat cu succes:", outPath)

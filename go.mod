@@ -11,6 +11,7 @@ require (
 
 require (
 	github.com/ciprianiordache/crud-depot v0.1.8
+	github.com/ciprianiordache/pdfgen v0.1.0
 	github.com/ciprianiordache/schema-builder v0.1.5
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
@@ -46,7 +47,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/jchv/go-winloader v0.0.0-20210711035445-715c2860da7e // indirect
-	github.com/johnfercher/maroto/v2 v2.4.1
+	github.com/johnfercher/maroto/v2 v2.4.1 // indirect
 	github.com/labstack/echo/v4 v4.13.3 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/leaanthony/go-ansi-parser v1.6.1 // indirect

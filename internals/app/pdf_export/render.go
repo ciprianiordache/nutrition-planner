@@ -9,32 +9,33 @@ import (
 	"nutrition-planner/internals/app/food"
 	"nutrition-planner/internals/app/plan"
 	"nutrition-planner/internals/app/supplement"
-	"nutrition-planner/internals/generator"
+
+	"github.com/ciprianiordache/pdfgen"
 )
 
 // renderPlan walks a fully-loaded plan (day variants -> meals -> foods /
 // supplements) and a client and issues the corresponding pdfgen calls onto
-// gen, using the label set for language (from settings.Response.Language -
+// doc, using the label set for language (from settings.Response.Language -
 // see labels.go). This is the one place that knows about both the domain
 // model and the generic pdfgen primitives - kept as a pure function (no
 // I/O) so it's easy to unit test against fixture data.
-func renderPlan(gen *generator.Generator, p plan.FullResponse, c client.Response, language string) {
+func renderPlan(doc *pdfgen.Document, p plan.FullResponse, c client.Response, language string) {
 	labels := labelsFor(language)
 
-	gen.ClientHeader(c.Name, c.Target)
-	gen.Title(p.Title)
+	doc.Eyebrow(c.Name, c.Target)
+	doc.Title(p.Title)
 
-	var kv [][2]string
+	var kv []pdfgen.Field
 	if c.Weight > 0 {
-		kv = append(kv, [2]string{labels.Weight, fmt.Sprintf("%s kg", formatQty(c.Weight))})
+		kv = append(kv, pdfgen.Field{Label: labels.Weight, Value: fmt.Sprintf("%s kg", formatQty(c.Weight))})
 	}
 	if c.Height > 0 {
-		kv = append(kv, [2]string{labels.Height, fmt.Sprintf("%s cm", formatQty(c.Height))})
+		kv = append(kv, pdfgen.Field{Label: labels.Height, Value: fmt.Sprintf("%s cm", formatQty(c.Height))})
 	}
 	if len(kv) > 0 {
-		gen.KeyValueLine(kv)
+		doc.KeyValueLine(kv...)
 	}
-	gen.Spacer(3)
+	doc.Spacer(3)
 
 	for _, dv := range p.DayVariants {
 		// Ține bannerul de zi lipit de prima lui masă - altfel bannerul
@@ -42,40 +43,40 @@ func renderPlan(gen *generator.Generator, p plan.FullResponse, c client.Response
 		// începând abia pe pagina următoare.
 		if len(dv.Meals) > 0 {
 			first := dv.Meals[0]
-			gen.EnsureFits(generator.DayBannerRowHeight + generator.BlockHeight(first.Note != "", len(first.Foods), len(first.Supplements)))
+			doc.EnsureFits(pdfgen.BannerHeight + pdfgen.BlockHeight(first.Note != "", len(first.Foods), len(first.Supplements) > 0))
 		} else {
-			gen.EnsureFits(generator.DayBannerRowHeight)
+			doc.EnsureFits(pdfgen.BannerHeight)
 		}
-		gen.DayBanner(dv.Name)
-		gen.Spacer(2)
+		doc.Banner(dv.Name)
+		doc.Spacer(2)
 
 		for i, m := range dv.Meals {
 			// Ține fiecare masă (titlu + tabel + suplimente) ca un bloc unic -
 			// altfel maroto poate rupe tabelul la mijloc când nu mai are loc.
-			gen.EnsureFits(generator.BlockHeight(m.Note != "", len(m.Foods), len(m.Supplements)))
+			doc.EnsureFits(pdfgen.BlockHeight(m.Note != "", len(m.Foods), len(m.Supplements) > 0))
 
-			gen.MealHeader(m.Name, m.Note)
-			gen.Table(generator.TableData{
+			doc.Heading(m.Name, m.Note)
+			doc.Table(pdfgen.TableData{
 				Headers:   []string{labels.Food, labels.Quantity, labels.Alternative, labels.Quantity},
 				Rows:      foodRows(m.Foods),
 				ColWidths: []int{4, 2, 4, 2},
 			})
-			gen.SupplementsLine(labels.Supplements, supplementItems(m.Supplements))
+			doc.Badges(labels.Supplements, supplementItems(m.Supplements))
 
 			if i < len(dv.Meals)-1 {
-				gen.Spacer(3)
-				gen.Divider()
-				gen.Spacer(3)
+				doc.Spacer(3)
+				doc.Divider()
+				doc.Spacer(3)
 			}
 		}
-		gen.Spacer(6)
+		doc.Spacer(6)
 	}
 
 	if p.GeneralRecommendations != "" {
-		gen.Footer(p.GeneralRecommendations)
+		doc.Footer(p.GeneralRecommendations)
 	}
 	if p.Footer != "" {
-		gen.Footer(p.Footer)
+		doc.Footer(p.Footer)
 	}
 }
 
