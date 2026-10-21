@@ -86,3 +86,31 @@ func TestApplySettingsTheme_DoesNotTouchNonColorFields(t *testing.T) {
 		t.Errorf("expected non-color fields to stay untouched, got %+v", got)
 	}
 }
+
+func TestPDFConfig_MapsEveryField(t *testing.T) {
+	cfg := validGeneratorConfig(t.TempDir())
+	cfg.FontRegularTTF, cfg.FontBoldTTF = "r.ttf", "b.ttf"
+
+	got := PDFConfig(cfg)
+
+	if got.PageSize != "A4" || got.MarginTop != 15 || got.MarginBottom != 15 || got.MarginLeft != 14 || got.MarginRight != 14 {
+		t.Errorf("page/margins = %+v", got)
+	}
+	c := got.Colors
+	if c.PageBackground != cfg.ColorPageBackground || c.CardBorder != cfg.ColorCardBorder ||
+		c.Primary != cfg.ColorPrimary || c.PrimaryLight != cfg.ColorPrimaryLight || c.OnPrimary != cfg.ColorOnPrimary ||
+		c.Text != cfg.ColorText || c.Muted != cfg.ColorMuted || c.TableHeader != cfg.ColorTableHeader || c.Divider != cfg.ColorDivider {
+		t.Errorf("colors = %+v", c)
+	}
+	if got.FontFamily != "NotoSans" || got.FontRegularPath != "r.ttf" || got.FontBoldPath != "b.ttf" {
+		t.Errorf("fonts = %q %q %q", got.FontFamily, got.FontRegularPath, got.FontBoldPath)
+	}
+}
+
+// A zero margin in the app's config means zero, not pdfgen's default.
+func TestPDFConfig_ZeroMarginStaysZero(t *testing.T) {
+	got := PDFConfig(config.GeneratorConfig{})
+	if got.MarginTop <= 0 || got.MarginTop > 0.1 {
+		t.Errorf("MarginTop = %v, want a hair above zero", got.MarginTop)
+	}
+}

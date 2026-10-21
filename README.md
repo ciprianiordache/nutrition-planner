@@ -38,7 +38,7 @@ Built with [Wails v2](https://wails.io) (Go + native WebView), [Svelte 5](https:
 | Backend | Go 1.26, [Wails v2](https://wails.io) |
 | Database | SQLite (pure-Go driver, [`modernc.org/sqlite`](https://pkg.go.dev/modernc.org/sqlite), no CGO) |
 | Lightweight ORM | [`crud-depot`](https://github.com/ciprianiordache/crud-depot) + [`schema-builder`](https://github.com/ciprianiordache/schema-builder) |
-| PDF generation | [`maroto/v2`](https://github.com/johnfercher/maroto) |
+| PDF generation | [`pdfgen`](https://github.com/ciprianiordache/pdfgen) (on [`maroto/v2`](https://github.com/johnfercher/maroto)) |
 | Frontend | Svelte 5 (runes) + TypeScript, Vite, Tailwind CSS v4 |
 | Logging | `log/slog` + [`lumberjack`](https://github.com/natefinch/lumberjack) (rotation) |
 
@@ -58,7 +58,7 @@ internals/app/<domain>/
 
 Cross-cutting packages:
 - `internals/database` — SQLite connection, file path resolution
-- `internals/generator` — generic PDF generation toolkit (theme, layout), domain-independent
+- [`pdfgen`](https://github.com/ciprianiordache/pdfgen) — generic PDF toolkit (theme, layout), a separate library; `pdf_export` maps plans onto it
 - `internals/logger` — builds the structured logger from config
 - `internals/osutil` — opens files/folders in the OS's default application
 - `config` — loads `config.yaml`/`.env`, environment isolation
@@ -152,7 +152,6 @@ npm run build   # production Vite build
 ├── internals/
 │   ├── app/<domain>/         # one package per domain (see Architecture)
 │   ├── database/
-│   ├── generator/            # generic PDF toolkit
 │   ├── logger/
 │   ├── osutil/
 │   └── testutil/             # in-memory SQLite database for tests

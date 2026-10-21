@@ -9,6 +9,8 @@ github.com/boombuler/barcode v1.1.0 h1:ChaYjBR63fr4LFyGn8E8nt7dBSt3MiU3zMOZqFvVk
 github.com/boombuler/barcode v1.1.0/go.mod h1:paBWMcWSl3LHKBqUq+rly7CNSldXjb2rDl3JlRe0mD8=
 github.com/ciprianiordache/crud-depot v0.1.8 h1:uVqkMaKCnFv5kt2vu9icmkPR7OIVPcO6VrAFSo26hio=
 github.com/ciprianiordache/crud-depot v0.1.8/go.mod h1:YFrkLIbMP+5vcIJ9Tj+vGiozoW94BIGcsWqp/pprWH4=
+github.com/ciprianiordache/pdfgen v0.1.0 h1:CxE/z0WXmP73K3t5uX5BHlwb0JtnAScFImguN7MOl6s=
+github.com/ciprianiordache/pdfgen v0.1.0/go.mod h1:XjVQkbIMDkfvcVcQbBtVj38D6VI3mzLFPR7thy1CLk4=
 github.com/ciprianiordache/schema-builder v0.1.5 h1:8DfjTtRFvaYJVFj+q766XAPDCNx1/7NfxT24UyDi3OA=
 github.com/ciprianiordache/schema-builder v0.1.5/go.mod h1:TFVqCRZc3YLwK7p+a6CQ2RW5wX8eAwLE8zLJpA6ztvo=
 github.com/clipperhouse/uax29/v2 v2.7.0 h1:+gs4oBZ2gPfVrKPthwbMzWZDaAFPGYK72F0NJv2v7Vk=

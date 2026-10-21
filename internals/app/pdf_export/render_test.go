@@ -2,6 +2,7 @@ package pdf_export
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
 	"nutrition-planner/config"
@@ -11,12 +12,13 @@ import (
 	"nutrition-planner/internals/app/meal"
 	"nutrition-planner/internals/app/plan"
 	"nutrition-planner/internals/app/supplement"
-	"nutrition-planner/internals/generator"
+
+	"github.com/ciprianiordache/pdfgen"
 )
 
 // validGeneratorConfig mirrors the defaults declared via struct tags on
 // config.GeneratorConfig (normally filled in by the app's config loader at
-// startup) - generator.NewGenerator expects a fully-populated config.
+// startup).
 func validGeneratorConfig(outputDir string) config.GeneratorConfig {
 	return config.GeneratorConfig{
 		OutputDirectory:     outputDir,
@@ -111,16 +113,16 @@ func fixturePlan() (plan.FullResponse, client.Response) {
 
 func TestRenderPlan_ProducesValidPDF(t *testing.T) {
 	dir := t.TempDir()
-	gen, err := generator.NewGenerator(validGeneratorConfig(dir))
+	doc, err := pdfgen.New(PDFConfig(validGeneratorConfig(dir)))
 	if err != nil {
-		t.Fatalf("NewGenerator: %v", err)
+		t.Fatalf("pdfgen.New: %v", err)
 	}
 
 	p, c := fixturePlan()
-	renderPlan(gen, p, c, "ro")
+	renderPlan(doc, p, c, "ro")
 
-	path, err := gen.Save("render_test.pdf")
-	if err != nil {
+	path := filepath.Join(dir, "render_test.pdf")
+	if err := doc.Save(path); err != nil {
 		t.Fatalf("Save: %v", err)
 	}
 
@@ -135,16 +137,16 @@ func TestRenderPlan_ProducesValidPDF(t *testing.T) {
 
 func TestRenderPlan_EnglishLabelsProduceValidPDF(t *testing.T) {
 	dir := t.TempDir()
-	gen, err := generator.NewGenerator(validGeneratorConfig(dir))
+	doc, err := pdfgen.New(PDFConfig(validGeneratorConfig(dir)))
 	if err != nil {
-		t.Fatalf("NewGenerator: %v", err)
+		t.Fatalf("pdfgen.New: %v", err)
 	}
 
 	p, c := fixturePlan()
-	renderPlan(gen, p, c, "en")
+	renderPlan(doc, p, c, "en")
 
-	path, err := gen.Save("render_test_en.pdf")
-	if err != nil {
+	path := filepath.Join(dir, "render_test_en.pdf")
+	if err := doc.Save(path); err != nil {
 		t.Fatalf("Save: %v", err)
 	}
 
